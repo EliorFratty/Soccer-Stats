@@ -61,4 +61,11 @@ extension UIViewController {
         alert.addAction(action)
         present(alert,animated: true, completion: nil)
     }
+    
+    func popUpEror(error123: String){
+        let alert = UIAlertController(title: "Error", message: error123, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Retary", style: .default, handler: nil)
+        alert.addAction(action)
+        present(alert,animated: true, completion: nil)
+    }
 }

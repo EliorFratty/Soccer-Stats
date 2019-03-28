@@ -53,13 +53,18 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
 
     
     @objc func logoutTapped(){
+
         AppManager.shared.logOut()
         guard let teamViewController = storyboard?.instantiateViewController(withIdentifier: "main") as?
             AppContainerViewController else { print("Couldn't find the view!") ; return}
-        
+
         teamViewController.modalTransitionStyle = .crossDissolve
         present(teamViewController, animated: true, completion: nil)
+   
     }
+        
+
+    
     
     // MARK: - tableView
     
@@ -90,14 +95,30 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
+        if searching {
+            let teamToRemove = searchedTeam[indexPath.row]
+            self.searchedTeam.remove(at: indexPath.row)
+            
+            self.tblView.deleteRows(at: [indexPath], with: .automatic )
+            
+            deleteTeamFromTeams(teamToDelete: teamToRemove)
+            DBService.shared.playerInTeamRef.child(teamToRemove).removeValue { (error, ref) in}
+            
+        } else {
+            let teamToRemove = teams[indexPath.row]
+
+            self.teams.remove(at: indexPath.row)
+            
+            self.tblView.deleteRows(at: [indexPath], with: .automatic )
+            
+            DBService.shared.playerInTeamRef.child(teamToRemove).removeValue { (error, ref) in}
+        }
         
-        self.teams.remove(at: indexPath.row)
+    }
+    
+    func deleteTeamFromTeams(teamToDelete: String) {
         
-        self.tblView.deleteRows(at: [indexPath], with: .automatic )
-        
-        let teamToRemove = teams[indexPath.row]
-        DBService.shared.playerInTeamRef.child(teamToRemove).removeValue { (error, ref) in}
-        
+        teams = teams.filter({$0 != teamToDelete})
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -143,12 +164,14 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //send array of all teams in DB
         if let addTeamVC = segue.destination as? AddTeamViewController {
             addTeamVC.teams = teams
-        } else if let teamVC = segue.destination as? TeamViewController {
-            teamVC.team = teamClicked
+        } else if let _ = segue.destination as? TeamViewController {
+            TeamViewController.team = teamClicked
         }
     }
+
 }
 
 class ChooseTeamTableViewCell: UITableViewCell {

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1761EA502D5625B52CD1D989 /* Pods_Soccer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFA67EA3F3AC896ADA4EAE66 /* Pods_Soccer.framework */; };
+		CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CE783224774CE007971A9 /* WeatherJSON.swift */; };
+		CE1CE78622477CC2007971A9 /* weatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CE78522477CC2007971A9 /* weatherViewController.swift */; };
 		CE75DD282242D3CF0039D551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD272242D3CF0039D551 /* AppDelegate.swift */; };
 		CE75DD2F2242D3D00039D551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD2E2242D3D00039D551 /* Assets.xcassets */; };
 		CE75DD322242D3D00039D551 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD302242D3D00039D551 /* LaunchScreen.storyboard */; };
@@ -29,6 +31,8 @@
 
 /* Begin PBXFileReference section */
 		78F1BBED816A086CDA1D5AF1 /* Pods-Soccer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soccer.debug.xcconfig"; path = "Target Support Files/Pods-Soccer/Pods-Soccer.debug.xcconfig"; sourceTree = "<group>"; };
+		CE1CE783224774CE007971A9 /* WeatherJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherJSON.swift; sourceTree = "<group>"; };
+		CE1CE78522477CC2007971A9 /* weatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weatherViewController.swift; sourceTree = "<group>"; };
 		CE75DD242242D3CF0039D551 /* Soccer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soccer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE75DD272242D3CF0039D551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE75DD2E2242D3D00039D551 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -130,6 +134,7 @@
 				CE75DD412242D5440039D551 /* Player.swift */,
 				CE75DD422242D5440039D551 /* PlayersInTeams.swift */,
 				CE75DD432242D5440039D551 /* Team.swift */,
+				CE1CE783224774CE007971A9 /* WeatherJSON.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -137,6 +142,7 @@
 		CE75DD4B2242D5580039D551 /* Control */ = {
 			isa = PBXGroup;
 			children = (
+				CE1CE78522477CC2007971A9 /* weatherViewController.swift */,
 				CE75DD622242DA390039D551 /* Login */,
 				CE75DD502242D56A0039D551 /* AddTeamViewController.swift */,
 				CE75DD4F2242D56A0039D551 /* ChooseTeamViewController.swift */,
@@ -289,11 +295,13 @@
 				CE75DD4A2242D5440039D551 /* DBService.swift in Sources */,
 				CE75DD5D2242D6870039D551 /* AppContainerViewController.swift in Sources */,
 				CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */,
+				CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */,
 				CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */,
 				CE75DD562242D56A0039D551 /* PlayersTableViewController.swift in Sources */,
 				CE75DD612242D6C70039D551 /* RegisterViewController.swift in Sources */,
 				CE75DD492242D5440039D551 /* AppManager.swift in Sources */,
 				CE75DD482242D5440039D551 /* Team.swift in Sources */,
+				CE1CE78622477CC2007971A9 /* weatherViewController.swift in Sources */,
 				CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */,
 				CE75DD282242D3CF0039D551 /* AppDelegate.swift in Sources */,
 			);

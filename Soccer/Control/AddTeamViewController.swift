@@ -78,8 +78,11 @@ class AddTeamViewController: UIViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let teamVC = segue.destination as? TeamViewController else {return}
-        teamVC.team = teamAddedToDB
+        if let _ = segue.destination as? TeamViewController {
+            if let addedTeamName = teamAddedToDB{
+                TeamViewController.team = addedTeamName
+            }
+        }
     }
  
     // MARK: - extensions

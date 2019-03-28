@@ -11,7 +11,7 @@ import Firebase
 
 class TeamViewController: UIViewController {
    
-    var team: String?
+    static var team = ""
    
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,14 +52,12 @@ class TeamViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem = logoutButton
         self.navigationItem.leftBarButtonItem = backButton
-        self.navigationItem.title = team
+        self.navigationItem.title = TeamViewController.team
     }
     
     // MARK - Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
-        guard let PlayerVC = segue.destination as? PlayersTableViewController else {return}
-        PlayerVC.team = team
     }
     
   
