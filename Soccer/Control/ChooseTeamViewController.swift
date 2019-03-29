@@ -25,8 +25,13 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if Auth.auth().currentUser?.uid == nil {
+            let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
+            self.present(viewCntroller, animated: true, completion: nil)
+        }
+
         reciveTeamsFromDB()
-       // self.hideKeyboard()
         makeNavBar()
         tblView.allowsMultipleSelectionDuringEditing = true
         tblView.rowHeight = UITableView.automaticDimension
@@ -54,13 +59,11 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     @objc func logoutTapped(){
 
-        AppManager.shared.logOut()
-        guard let teamViewController = storyboard?.instantiateViewController(withIdentifier: "main") as?
-            AppContainerViewController else { print("Couldn't find the view!") ; return}
-
-        teamViewController.modalTransitionStyle = .crossDissolve
-        present(teamViewController, animated: true, completion: nil)
-   
+       try! Auth.auth().signOut()
+        
+        let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
+        self.present(viewCntroller, animated: true, completion: nil)
+        
     }
         
 

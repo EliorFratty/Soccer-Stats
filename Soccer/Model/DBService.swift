@@ -16,12 +16,7 @@ class DBService {
     
     let Ref = Database.database().reference()
     let playerInTeamRef = Database.database().reference().child("playersInTeam")
-    //let players = Database.database().reference().child("players")
+    let users = Database.database().reference().child("users")
     
-    func getUserName(){
-        Database.database().reference().observe(.value) { (snapshot) in
-            print(snapshot.key)
-        }
-    }
 
 }

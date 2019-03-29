@@ -19,12 +19,11 @@ class TeamViewController: UIViewController {
     }
     
     @objc func logoutTapped(){
-        AppManager.shared.logOut()
-        guard let teamViewController = storyboard?.instantiateViewController(withIdentifier: "main") as?
-            AppContainerViewController else { print("Couldn't find the view!") ; return}
+        try! Auth.auth().signOut()
         
-        teamViewController.modalTransitionStyle = .crossDissolve
-        present(teamViewController, animated: true, completion: nil)
+        let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
+        self.present(viewCntroller, animated: true, completion: nil)
+        
     }
     
     @objc func goBackToChooseTeam() {
