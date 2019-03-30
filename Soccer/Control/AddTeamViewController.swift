@@ -10,7 +10,8 @@ import UIKit
 
 class AddTeamViewController: UIViewController {
     
-    var teams: [String]?
+    var teams: [Team]?
+    var uid: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,16 +29,22 @@ class AddTeamViewController: UIViewController {
     @IBAction func goTapped(_ sender: UIButton) {
         
         //add team to DB, if not exsist
-        if let teamName = teamNameTextField.text, teamName != "", checkTeamName(teamName){
+        if let teamName = teamNameTextField.text, teamName != "", checkTeamName(teamName), let uid = uid{
             
             // add team's details
             let dateString = String(describing: Date())
-            let param = [
-                "name": teamName,
+            let teamParam = [
+                "name": String(teamName),
                 "date" : dateString
             ]
             
-            DBService.shared.playerInTeamRef.child(teamName).setValue(param)
+            let userParam = [
+                "team": teamName
+            ]
+            
+            DBService.shared.allTeams.child(teamName).setValue(teamParam)
+            DBService.shared.users.child(uid).child("teams").child(teamName).setValue(userParam)
+            
             teamAddedToDB = teamName
             
             self.performSegue(withIdentifier: "showTeam1", sender: self)
@@ -56,7 +63,7 @@ class AddTeamViewController: UIViewController {
     func checkTeamName(_ teamName:String) -> Bool{
         if let teams = teams {
         teams.forEach { (team) in
-            if team == teamName {
+            if team.name == teamName {
                 self.sameTeam = false
                 }
             }

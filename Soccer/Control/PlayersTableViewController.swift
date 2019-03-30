@@ -32,7 +32,7 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
         
          var playerFromDB = [String]()
         var playersKeysFromDB = [String]()
-        DBService.shared.playerInTeamRef.observe(.value) { [self] (snapshot) in
+        DBService.shared.allTeams.child("players").observe(.value) { [self] (snapshot) in
             guard let snapDict = snapshot.childSnapshot(forPath: TeamViewController.team).childSnapshot(forPath: "Players").value as? [String: [String : String]] else {return}
             
             playerFromDB.removeAll()
@@ -100,7 +100,7 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
             
             self.tableView.deleteRows(at: [indexPath], with: .automatic )
             
-            DBService.shared.playerInTeamRef.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
+            DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
 
         } else  {
         let playerToDelete = players[indexPath.row]
@@ -109,7 +109,7 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
             
         self.tableView.deleteRows(at: [indexPath], with: .automatic )
         
-        DBService.shared.playerInTeamRef.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
+         DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
         }
         
         tableView.reloadData()
@@ -234,7 +234,7 @@ extension PlayersTableViewController: CNContactPickerDelegate {
             let contactPhoneNumber = setNumberFromContact(contactNumber: phoneNumber)
             
             sendMassageToWhatsapp(msg: "For playing in my team you need to download this app", number: contactPhoneNumber)
-            DBService.shared.playerInTeamRef.child(TeamViewController.team).child("Players").child(name).setValue(param2)
+           DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(name).setValue(param2)
             self.tableView.reloadData()
         }
   

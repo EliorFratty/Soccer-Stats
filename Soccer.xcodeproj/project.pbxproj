@@ -24,6 +24,7 @@
 		CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD502242D56A0039D551 /* AddTeamViewController.swift */; };
 		CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD512242D56A0039D551 /* TeamViewController.swift */; };
 		CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD5E2242D6C10039D551 /* LogInViewController.swift */; };
+		CEEB69EC224FEFEC001362D8 /* SearchTeamTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		CE75DD502242D56A0039D551 /* AddTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD512242D56A0039D551 /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD5E2242D6C10039D551 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTeamTableTableViewController.swift; sourceTree = "<group>"; };
 		F405DEB31B3C2A1B3DC12513 /* Pods-Soccer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soccer.release.xcconfig"; path = "Target Support Files/Pods-Soccer/Pods-Soccer.release.xcconfig"; sourceTree = "<group>"; };
 		FFA67EA3F3AC896ADA4EAE66 /* Pods_Soccer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Soccer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -141,6 +143,7 @@
 				CE75DD4F2242D56A0039D551 /* ChooseTeamViewController.swift */,
 				CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */,
 				CE75DD512242D56A0039D551 /* TeamViewController.swift */,
+				CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 				CE75DD462242D5440039D551 /* Player.swift in Sources */,
 				CE75DD4A2242D5440039D551 /* DBService.swift in Sources */,
 				CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */,
+				CEEB69EC224FEFEC001362D8 /* SearchTeamTableTableViewController.swift in Sources */,
 				CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */,
 				CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */,
 				CE75DD562242D56A0039D551 /* PlayersTableViewController.swift in Sources */,

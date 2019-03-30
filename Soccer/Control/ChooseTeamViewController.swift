@@ -10,11 +10,12 @@ import Firebase
 
 class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
-    var teams = [String]()
-    var searchedTeam = [String]()
+    var searchedTeam = [Team]()
     var teamClicked = ""
     var checkIfThisTeamExsist = false
     var searching = false
+    var uid: String?
+    var allTeams = [Team]()
     
     
     @IBOutlet weak var tblView: UITableView!
@@ -25,50 +26,59 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if Auth.auth().currentUser?.uid == nil {
-            let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
-            self.present(viewCntroller, animated: true, completion: nil)
-        }
-
-        reciveTeamsFromDB()
         makeNavBar()
         tblView.allowsMultipleSelectionDuringEditing = true
         tblView.rowHeight = UITableView.automaticDimension
 
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkIfUserIsLoggedIn()
+    }
+    
+    func checkIfUserIsLoggedIn() {
+        if Auth.auth().currentUser?.uid == nil {
+            let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
+            self.present(viewCntroller, animated: true, completion: nil)
+        } else {
+            uid = Auth.auth().currentUser?.uid
+            DBService.shared.users.child(uid!).observeSingleEvent(of: .value) { (snapshot) in
+                if let dict = snapshot.value as? [String:Any] {
+                    if let name = dict["Name"] as? String {
+                    self.navigationItem.title = "Hello \(name)"
+                    }
+                }
+            }
+            reciveTeamsFromDB()
+        }
+    }
+    
     // MARK: - service
 
     func reciveTeamsFromDB() {
-        var teamsFromDB = [String]()
-        
-        DBService.shared.playerInTeamRef.observe(.value) { (snapshot) in
-            self.activityIndic.stopAnimating()
-            guard let snapDict = snapshot.value as? [String: [String : Any]] else {return}
-            teamsFromDB.removeAll()
-            for team in snapDict.keys{
-                teamsFromDB.append(team)
-            }
 
-            self.teams = teamsFromDB
-            self.tblView.reloadData()
+        guard let uid = Auth.auth().currentUser?.uid else {print("Error") ; return }
+        
+        allTeams.removeAll()
+        DBService.shared.users.child(uid).child("teams").observe(.childAdded) { [self] (snapshot) in
+            self.activityIndic.stopAnimating()
+
+            guard let snapDict = snapshot.value as? [String : Any] else {return}
+
+            let team = Team()
+            team.name = snapDict["name"] as? String
+            team.date = snapDict["date"] as? String
+            
+            self.allTeams.append(team)
+            
+            DispatchQueue.main.async {
+                self.tblView.reloadData()
+            }
         }
     }
-
-    
-    @objc func logoutTapped(){
-
-       try! Auth.auth().signOut()
-        
-        let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
-        self.present(viewCntroller, animated: true, completion: nil)
-        
-    }
         
 
-    
-    
     // MARK: - tableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -76,7 +86,7 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
         if searching {
            return searchedTeam.count
         } else {
-            return teams.count
+            return allTeams.count
         }
     }
     
@@ -84,9 +94,9 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! ChooseTeamTableViewCell
 
         if searching {
-            cell.teamNameLabel.text = searchedTeam[indexPath.row]
+            cell.teamNameLabel.text = searchedTeam[indexPath.row].name
         } else {
-            cell.teamNameLabel.text = teams[indexPath.row]
+            cell.teamNameLabel.text = allTeams[indexPath.row].name
         }
         
         return cell
@@ -99,37 +109,37 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if searching {
-            let teamToRemove = searchedTeam[indexPath.row]
+            let teamToRemove = searchedTeam[indexPath.row].name!
             self.searchedTeam.remove(at: indexPath.row)
             
             self.tblView.deleteRows(at: [indexPath], with: .automatic )
             
             deleteTeamFromTeams(teamToDelete: teamToRemove)
-            DBService.shared.playerInTeamRef.child(teamToRemove).removeValue { (error, ref) in}
+            DBService.shared.users.child(uid!).child("teams").child(teamToRemove).removeValue { (error, ref) in}
             
         } else {
-            let teamToRemove = teams[indexPath.row]
+            let teamToRemove = allTeams[indexPath.row].name!
 
-            self.teams.remove(at: indexPath.row)
+            self.allTeams.remove(at: indexPath.row)
             
             self.tblView.deleteRows(at: [indexPath], with: .automatic )
             
-            DBService.shared.playerInTeamRef.child(teamToRemove).removeValue { (error, ref) in}
+             DBService.shared.users.child(uid!).child("teams").child(teamToRemove).removeValue { (error, ref) in}
         }
         
     }
     
     func deleteTeamFromTeams(teamToDelete: String) {
         
-        teams = teams.filter({$0 != teamToDelete})
+        allTeams = allTeams.filter({$0.name! != teamToDelete})
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        
         if searching {
-            teamClicked = searchedTeam[indexPath.row]
+            teamClicked = searchedTeam[indexPath.row].name!
         } else {
-            teamClicked = teams[indexPath.row]
+            teamClicked = allTeams[indexPath.row].name!
         }
         
         self.performSegue(withIdentifier: "showTeam", sender: self)
@@ -140,18 +150,16 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     // MARK: - NAV & SEARCH bar
     
     func makeNavBar() {
-        let logoutButton = UIBarButtonItem(title: "Log out", style: .plain, target: self, action: #selector(logoutTapped))
+        let addTeamButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addTeamToUser))
+        self.navigationItem.rightBarButtonItem = addTeamButton
         
-        self.navigationItem.rightBarButtonItem = logoutButton
-        
-        let user = Auth.auth().currentUser
-        if let user = user, let email = user.email {
-            self.navigationItem.title = "⚽️ Hello \(email) ⚽️"
-        }
+        let searchTeamButton = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchTeamFromAllUsers))
+        self.navigationItem.leftBarButtonItem = searchTeamButton
+    
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchedTeam = teams.filter({$0.lowercased().prefix(searchText.count) == searchText.lowercased()})
+        searchedTeam = allTeams.filter({$0.name!.lowercased().prefix(searchText.count) == searchText.lowercased()})
         self.searching = true
         tblView.reloadData()
     }
@@ -162,6 +170,17 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
         tblView.reloadData()
     }
     
+    @objc func addTeamToUser(){
+        
+        performSegue(withIdentifier: "createNewTeam", sender: self)
+    
+    }
+    
+    @objc func searchTeamFromAllUsers(){
+        let searchTeamTableTableViewController = SearchTeamTableTableViewController()
+        let navController = UINavigationController(rootViewController: searchTeamTableTableViewController)
+        present(navController, animated: true, completion: nil)
+    }
     
     // MARK: - Navigation
     
@@ -169,7 +188,9 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //send array of all teams in DB
         if let addTeamVC = segue.destination as? AddTeamViewController {
-            addTeamVC.teams = teams
+             let uid = Auth.auth().currentUser?.uid
+            addTeamVC.teams = allTeams
+            addTeamVC.uid = uid
         } else if let _ = segue.destination as? TeamViewController {
             TeamViewController.team = teamClicked
         }

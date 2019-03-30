@@ -29,7 +29,7 @@
         <!--Add Team View Controller-->
         <scene sceneID="3ea-Ut-qUu">
             <objects>
-                <viewController id="CZ5-xi-4h7" customClass="AddTeamViewController" customModule="Soccer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="addTeam" id="CZ5-xi-4h7" customClass="AddTeamViewController" customModule="Soccer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="0dH-ps-1gF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -90,28 +90,18 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CpL-gO-Mkc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2193" y="604"/>
+            <point key="canvasLocation" x="2591" y="570"/>
         </scene>
         <!--Choose Team View Controller-->
         <scene sceneID="7np-jr-wHX">
             <objects>
-                <viewController id="5OP-HM-Fdc" customClass="ChooseTeamViewController" customModule="Soccer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChooseTeamViewController" id="5OP-HM-Fdc" customClass="ChooseTeamViewController" customModule="Soccer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eAW-fZ-BbW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="40h-Qw-Zai">
-                                <rect key="frame" x="16" y="742" width="150" height="36"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Create new Team">
-                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <segue destination="CZ5-xi-4h7" kind="show" identifier="createNewTeam" id="43z-Ay-9WA"/>
-                                </connections>
-                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0mV-X6-zr8">
-                                <rect key="frame" x="0.0" y="148" width="375" height="512"/>
+                                <rect key="frame" x="0.0" y="148" width="375" height="664"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationWidth="10" reuseIdentifier="searchCell" rowHeight="71" id="Xab-SQ-Qss" customClass="ChooseTeamTableViewCell" customModule="Soccer" customModuleProvider="target">
@@ -165,24 +155,23 @@
                                     <outlet property="delegate" destination="5OP-HM-Fdc" id="cZY-fI-dKF"/>
                                 </connections>
                             </searchBar>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="hdG-HZ-75c">
-                                <rect key="frame" x="169" y="388" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="hdG-HZ-75c">
+                                <rect key="frame" x="169" y="387" width="37" height="38"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="40h-Qw-Zai" firstAttribute="top" secondItem="0mV-X6-zr8" secondAttribute="bottom" constant="82" id="3a0-ME-pry"/>
                             <constraint firstItem="0mV-X6-zr8" firstAttribute="top" secondItem="0mG-wy-vTm" secondAttribute="bottom" id="4Wf-UD-S7X"/>
                             <constraint firstItem="0mG-wy-vTm" firstAttribute="top" secondItem="4PV-zn-hEK" secondAttribute="top" id="8O9-Xv-jnT"/>
                             <constraint firstItem="0mV-X6-zr8" firstAttribute="leading" secondItem="eAW-fZ-BbW" secondAttribute="leading" id="DpS-PO-F9g"/>
-                            <constraint firstItem="40h-Qw-Zai" firstAttribute="leading" secondItem="4PV-zn-hEK" secondAttribute="leading" constant="16" id="KdV-9E-SRs"/>
+                            <constraint firstAttribute="bottom" secondItem="0mV-X6-zr8" secondAttribute="bottom" id="KOl-aQ-v5d"/>
                             <constraint firstItem="0mV-X6-zr8" firstAttribute="leading" secondItem="0mG-wy-vTm" secondAttribute="leading" id="Pmj-QU-szx"/>
-                            <constraint firstItem="4PV-zn-hEK" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="40h-Qw-Zai" secondAttribute="trailing" symbolic="YES" id="Too-dp-lwB"/>
-                            <constraint firstItem="40h-Qw-Zai" firstAttribute="bottom" secondItem="4PV-zn-hEK" secondAttribute="bottom" id="d8G-E8-Rfx"/>
+                            <constraint firstItem="hdG-HZ-75c" firstAttribute="centerY" secondItem="eAW-fZ-BbW" secondAttribute="centerY" id="dnG-UI-VHF"/>
                             <constraint firstItem="0mV-X6-zr8" firstAttribute="trailing" secondItem="0mG-wy-vTm" secondAttribute="trailing" id="jQU-uE-T0q"/>
+                            <constraint firstItem="0mV-X6-zr8" firstAttribute="centerX" secondItem="hdG-HZ-75c" secondAttribute="centerX" id="keO-AV-UU1"/>
+                            <constraint firstItem="4PV-zn-hEK" firstAttribute="bottom" secondItem="hdG-HZ-75c" secondAttribute="bottom" constant="353" id="zEi-nH-u2e"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4PV-zn-hEK"/>
                     </view>
@@ -192,11 +181,12 @@
                         <outlet property="searchBar" destination="0mG-wy-vTm" id="EBI-65-Kz2"/>
                         <outlet property="tblView" destination="0mV-X6-zr8" id="945-8M-FSJ"/>
                         <segue destination="OwN-8J-GgZ" kind="show" identifier="showTeam" id="lXF-D8-3X8"/>
+                        <segue destination="CZ5-xi-4h7" kind="show" identifier="createNewTeam" id="SYN-G6-ecH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gNZ-K5-PBC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2660" y="-168"/>
+            <point key="canvasLocation" x="2660" y="-168.4729064039409"/>
         </scene>
         <!--Team View Controller-->
         <scene sceneID="ZOk-sU-FXb">

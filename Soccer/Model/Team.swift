@@ -8,14 +8,11 @@
 
 import Foundation
 
-struct Team {
+class Team: NSObject {
     
-
+    var date: String?
     var name: String?
-    var players = [Player]()
-    var startingDate: Date = Date()
+    //var players = [Player]()
 
-    mutating func addPlayer(player: Player){
-        players.append(player)
-    }
+
 }

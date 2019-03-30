@@ -23,7 +23,9 @@ class TeamViewController: UIViewController {
         
         let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
         self.present(viewCntroller, animated: true, completion: nil)
+        navigationController?.popToRootViewController(animated: true)
         
+
     }
     
     @objc func goBackToChooseTeam() {

@@ -14,9 +14,8 @@ class DBService {
     static let shared = DBService()
     private init() { }
     
-    let Ref = Database.database().reference()
-    let playerInTeamRef = Database.database().reference().child("playersInTeam")
-    let users = Database.database().reference().child("users")
     
+    let allTeams = Database.database().reference().child("Teams")
+    let users = Database.database().reference().child("users")
 
 }

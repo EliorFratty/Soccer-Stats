@@ -10,36 +10,6 @@ import UIKit
 import Firebase
 
 class LogInViewController: UIViewController {
-
-//    @IBOutlet weak var emailTextFiled: UITextField!
-//    @IBOutlet weak var passwordTextField: UITextField!
-//    var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView()
-//
-//    @IBAction func logInTapped(_ sender: UIButton) {
-//
-//        activityIndicator.center = self.view.center
-//        activityIndicator.hidesWhenStopped = true
-//        activityIndicator.style = UIActivityIndicatorView.Style.gray
-//        view.addSubview(activityIndicator)
-//
-//        guard let email =  emailTextFiled.text, let pass = passwordTextField.text else {
-//            return
-//        }
-//        activityIndicator.startAnimating()
-//        Auth.auth().signIn(withEmail: email, password: pass) { [self] user, error in
-//            self.activityIndicator.stopAnimating()
-//
-//            if let _ = user {
-//
-//                self.dismiss(animated: true, completion: nil)
-//                UserDefaults.standard.set(email, forKey: "userEmail")
-//                UserDefaults.standard.set(pass, forKey: "userPass")
-//            } else {
-//                self.popUpEror(error: error!)
-//
-//            }
-//        }
-//    }
     
     let inputContainerView: UIView = {
         let view = UIView()
@@ -60,7 +30,7 @@ class LogInViewController: UIViewController {
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
         
-        button.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(registerLoginTapped), for: .touchUpInside)
         return button
     }()
     
@@ -68,7 +38,6 @@ class LogInViewController: UIViewController {
     let nameTextFiled: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Name"
-        
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
@@ -91,6 +60,7 @@ class LogInViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = UIColor(red: 0.22, green: 0.22, blue: 0.22, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     }()
     
@@ -99,6 +69,7 @@ class LogInViewController: UIViewController {
         tf.placeholder = "Password"
         tf.isSecureTextEntry = true
         tf.translatesAutoresizingMaskIntoConstraints = false
+        
         return tf
     }()
     
@@ -107,7 +78,7 @@ class LogInViewController: UIViewController {
         imageView.image = UIImage(named: "LoginPic")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 5
+        imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
 
         return imageView
@@ -137,10 +108,6 @@ class LogInViewController: UIViewController {
         setUpLoginRegisterButton()
         setUpProfileImageView()
         
-        // let savedUser = UserDefaults.standard.object(forKey: "userEmail")
-        //let savedPass = UserDefaults.standard.object(forKey: "userPass")
-        //        emailTextFiled.text = UserDefaults.standard.object(forKey: "userEmail") as? String
-        //        passwordTextField.text = UserDefaults.standard.object(forKey: "userPass") as? String
     }
     // need x, y, width, height
     
@@ -216,7 +183,7 @@ class LogInViewController: UIViewController {
     
     // MARK: - Register
     
-    @objc func registerTapped() {
+    @objc func registerLoginTapped() {
         
      loginRegisterSegmentedControl.selectedSegmentIndex == 1 ? registerToTheSystem() : loginToTheSystem()
         
@@ -277,6 +244,13 @@ class LogInViewController: UIViewController {
                                                                             multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/3)
         emailTextFieldHeightAnchor?.isActive = true
  
+        if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
+            emailTextFiled.text = UserDefaults.standard.object(forKey: "userEmail") as? String
+            passwordTextFiled.text = UserDefaults.standard.object(forKey: "userPass") as? String
+        } else {
+            emailTextFiled.text = ""
+            passwordTextFiled.text = ""
+        }
     }
 }
 
