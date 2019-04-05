@@ -29,13 +29,17 @@ class AddTeamViewController: UIViewController {
     @IBAction func goTapped(_ sender: UIButton) {
         
         //add team to DB, if not exsist
-        if let teamName = teamNameTextField.text, teamName != "", checkTeamName(teamName), let uid = uid{
+        if let teamName = teamNameTextField.text,
+            teamName != "",
+            checkTeamName(teamName),
+            let uid = uid{
             
             // add team's details
             let dateString = String(describing: Date())
             let teamParam = [
-                "name": String(teamName),
-                "date" : dateString
+                "name"  : String(teamName),
+                "date"  : dateString,
+                "imoji" : ""
             ]
             
             let userParam = [

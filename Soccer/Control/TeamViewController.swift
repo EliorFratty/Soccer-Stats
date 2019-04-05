@@ -11,11 +11,13 @@ import Firebase
 
 class TeamViewController: UIViewController {
    
-    static var team = ""
+    static var team : String!
+    static var player: Player!
    
     override func viewDidLoad() {
         super.viewDidLoad()
         makeNavBar()
+        addUserToTheTeam()
     }
     
     @objc func logoutTapped(){
@@ -39,6 +41,16 @@ class TeamViewController: UIViewController {
     }
     
     @IBAction func gamesTapped(_ sender: UIButton) {
+        
+    }
+    
+    func addUserToTheTeam(){
+
+        let param = ["fullName": TeamViewController.player.fullName,
+                     "email" : TeamViewController.player.email,
+                     "profileImageUrl" :  TeamViewController.player.profileImageUrl ]
+
+        DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(TeamViewController.player.fullName).setValue(param)
         
     }
     

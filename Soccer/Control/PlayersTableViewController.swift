@@ -13,13 +13,17 @@ import ContactsUI
 
 class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
 
-    var players = [String]()
-    var searchedPlayers = [String]()
+    var players = [Player]()
+    var searchedPlayers = [Player]()
     var searching = false
     var addButton: UIBarButtonItem!
+    var uid: String?
+    let cellID = "playerCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
+        
         makeNavBar()
         importPlayerFromDB()
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -29,31 +33,41 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
     // MARK: - DB import
     
     func importPlayerFromDB() {
+
+        self.players.removeAll()
         
-         var playerFromDB = [String]()
-        var playersKeysFromDB = [String]()
-        DBService.shared.allTeams.child("players").observe(.value) { [self] (snapshot) in
-            guard let snapDict = snapshot.childSnapshot(forPath: TeamViewController.team).childSnapshot(forPath: "Players").value as? [String: [String : String]] else {return}
+        DBService.shared.allTeams.child(TeamViewController.team).child("Players").observe(.childAdded) { [self] (snapshot) in
+            guard let snapDict = snapshot.value as? [String : Any] else {return}
+
+            if let fullName = snapDict["fullName"] as? String,
+                let email = snapDict["email"] as? String,
+                let profileImageUrl = snapDict["profileImageUrl"] as? String {
             
-            playerFromDB.removeAll()
-            
-            for snap in snapDict {
-                let playerName = snap.value["firstName"]!  + " " + snap.value["lastName"]!
-                playerFromDB.append(playerName)
-                playersKeysFromDB.append(snap.key)
+                let player = Player(fullName: fullName,
+                                    email: email,
+                                    profileImageUrl: profileImageUrl)
+                self.players.append(player)
             }
-            self.players = playerFromDB
 
            // sort player from A-Z
-            self.players.sort(by: { (p1, p2) -> Bool in
-                return p1 < p2
-            })
+            self.players.sort(){ (p1, p2) -> Bool in
+                return p1.fullName < p2.fullName
+            }
             
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        uid = Auth.auth().currentUser?.uid
+    }
+    
     // MARK: - Add player to DB and TableView
+    
+    private let cp = CNContactPickerViewController()
     
     @objc func tapAddButton(){
         cp.delegate = self
@@ -74,15 +88,29 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "playerCell", for: indexPath) as! PlayerTableViewCell
-        
        
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! UserCell
+        
+        let playerToShow: Player
+    
         if searching {
-             cell.playerName.text = searchedPlayers[indexPath.row]
+            playerToShow = searchedPlayers[indexPath.row]
+
         } else {
-             cell.playerName.text = players[indexPath.row]
+            playerToShow = players[indexPath.row]
+ 
         }
+        
+        cell.textLabel?.text = playerToShow.fullName
+        cell.detailTextLabel?.text = playerToShow.email
+        
+        cell.profileImageView.loadImageUsingCatchWithUrlString(URLString: playerToShow.profileImageUrl)
+
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -91,27 +119,22 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
-        if searching {
-            let playerToDelete = searchedPlayers[indexPath.row]
-            print(playerToDelete)
-            
-            deletePlayerFromTeams(playerToDelete: searchedPlayers[indexPath.row])
-            self.searchedPlayers.remove(at: indexPath.row)
-            
-            self.tableView.deleteRows(at: [indexPath], with: .automatic )
-            
-            DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
-
-        } else  {
-        let playerToDelete = players[indexPath.row]
-
-        self.players.remove(at: indexPath.row)
-            
-        self.tableView.deleteRows(at: [indexPath], with: .automatic )
+        let playerToDelete: String
         
-         DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
+        if searching {
+            
+            playerToDelete = searchedPlayers[indexPath.row].fullName
+            deletePlayerFromTeams(playerToDelete: searchedPlayers[indexPath.row].fullName)
+            
+        } else  {
+            
+            playerToDelete = players[indexPath.row].fullName
         }
         
+        self.searchedPlayers.remove(at: indexPath.row)
+        self.tableView.deleteRows(at: [indexPath], with: .automatic )
+        
+        DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
         tableView.reloadData()
     }
     
@@ -119,7 +142,8 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
         var indexPlayerToDelete = 0
         
         for player in players {
-            if player == playerToDelete {
+            let name = player.fullName
+            if name == playerToDelete {
                 break
             }
             indexPlayerToDelete += 1
@@ -142,9 +166,8 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
     // MARK: - Search Bar
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchedPlayers = players.filter({$0.lowercased().prefix(searchText.count) == searchText.lowercased()})
+        searchedPlayers = players.filter({$0.fullName.lowercased().prefix(searchText.count) == searchText.lowercased()})
         self.searching = true
-        //addButton.isEnabled = false
         tableView.reloadData()
 
     }
@@ -152,67 +175,9 @@ class PlayersTableViewController: UITableViewController, UISearchBarDelegate{
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searching = false
         searchBar.text = ""
-      //  addButton.isEnabled = true
         tableView.reloadData()
     }
 
-    
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
-    private let cp = CNContactPickerViewController()
-
-}
-
-class PlayerTableViewCell: UITableViewCell {
-    
-    @IBOutlet weak var playerImage: UIImageView!
-    @IBOutlet weak var playerName: UILabel!
-    @IBOutlet weak var playerBackGround: UIView!
-    
 }
 
 // MARK: - add player from Contact with whatsapp
@@ -220,10 +185,6 @@ class PlayerTableViewCell: UITableViewCell {
 extension PlayersTableViewController: CNContactPickerDelegate {
     
     func addPlayer(firstName:String,lastName:String, phoneNumber: String ){
-        let param2 = [
-            "firstName": firstName,
-            "lastName" : lastName
-        ]
         
         let name = firstName + " " + lastName
         
@@ -234,7 +195,6 @@ extension PlayersTableViewController: CNContactPickerDelegate {
             let contactPhoneNumber = setNumberFromContact(contactNumber: phoneNumber)
             
             sendMassageToWhatsapp(msg: "For playing in my team you need to download this app", number: contactPhoneNumber)
-           DBService.shared.allTeams.child(TeamViewController.team).child("Players").child(name).setValue(param2)
             self.tableView.reloadData()
         }
   
@@ -242,7 +202,8 @@ extension PlayersTableViewController: CNContactPickerDelegate {
     
     func checkIfNameExsists(playerName: String) -> Bool {
         for player in players {
-            if player == playerName {
+            let name = player.fullName
+            if name == playerName {
                 return true
             }
         }
@@ -298,19 +259,19 @@ extension PlayersTableViewController: CNContactPickerDelegate {
     
     func sendMassageToWhatsapp(msg: String, number: String) {
         let urlWhats = "whatsapp://send?phone=+972\(number.dropFirst())&text=\(msg)"
-        
+
         var characterSet = CharacterSet.urlQueryAllowed
         characterSet.insert(charactersIn: "?&")
-        
+
         if let urlString = urlWhats.addingPercentEncoding(withAllowedCharacters: characterSet){
-            
+
             if let whatsappURL = NSURL(string: urlString) {
                 if UIApplication.shared.canOpenURL(whatsappURL as URL){
                     UIApplication.shared.open(whatsappURL as URL, options: [:], completionHandler: nil)
                 }
                 else {
                     print("Install Whatsapp")
-                    
+
                 }
             }
         }
@@ -318,6 +279,47 @@ extension PlayersTableViewController: CNContactPickerDelegate {
     
     func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
 
+    }
+    
+}
+
+class UserCell: UITableViewCell {
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        textLabel?.frame = CGRect(x: 64, y: textLabel!.frame.origin.y-2, width: textLabel!.frame.width, height: textLabel!.frame.height)
+        detailTextLabel?.frame = CGRect(x: 64, y: detailTextLabel!.frame.origin.y+2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
+    }
+    
+    let profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 24
+        imageView.layer.masksToBounds = true
+        
+        return imageView
+    }()
+    
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        
+        addSubview(profileImageView)
+        profileImageAnchor()
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func profileImageAnchor() {
+        profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8) .isActive = true
+        profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
     }
     
 }

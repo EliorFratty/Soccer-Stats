@@ -10,8 +10,9 @@ import Foundation
 
 struct Player {
 
-     var firstName: String
-     var lastName: String
+     var fullName: String
+     var email: String
+     var profileImageUrl: String
 //    private let email: String
 //    private let age: Int
     

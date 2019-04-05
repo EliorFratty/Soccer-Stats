@@ -12,7 +12,6 @@ import Firebase
 
 class SearchTeamTableTableViewController: UITableViewController {
 
-    var teams = [String]()
     var allTeam = [Team]()
     let cellID = "theSearchCell"
     
@@ -22,7 +21,6 @@ class SearchTeamTableTableViewController: UITableViewController {
         makeNavBar()
         reciveTeamsFromDB()
         tableView.register(teamCell.self, forCellReuseIdentifier: cellID)
-        
 
     }
     

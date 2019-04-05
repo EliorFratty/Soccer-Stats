@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class LogInViewController: UIViewController {
+class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let inputContainerView: UIView = {
         let view = UIView()
@@ -73,16 +73,44 @@ class LogInViewController: UIViewController {
         return tf
     }()
     
-    let profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.image = UIImage(named: "LoginPic")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
-
+        
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectedProfileImage)))
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
+    
+    @objc func selectedProfileImage(){
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let edditedImage = info[.editedImage] {
+            selectedImageFromPicker = edditedImage as? UIImage
+            
+        } else if let originalImage = info[.originalImage] {
+            selectedImageFromPicker = originalImage as? UIImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker {
+            profileImageView.image = selectedImage
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
     
     lazy var loginRegisterSegmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Login", "Register"])
@@ -194,17 +222,48 @@ class LogInViewController: UIViewController {
         
         Auth.auth().createUser(withEmail: email, password: pass) { (user, error) in
             
-            if error == nil {
-                let param = ["Name": name, "Email" : email]
-                guard let userID = user?.user.uid else {return}
-                
-                DBService.shared.users.child(userID).setValue(param)
-                self.dismiss(animated: true, completion: nil)
-
-            } else {
-                self.popUpEror(error: error!)
+            if let error = error {
+                self.popUpEror(error: error)
+                return
             }
-        }
+            
+            guard let userID = user?.user.uid else {return}
+            
+            guard let profileImage = self.profileImageView.image else { print("error");return}
+            guard let profileImageData = profileImage.jpegData(compressionQuality: 0.1) else { print("error2");return}
+            let fileName = "\(userID).jpg"
+            
+            let uploadImageRef = DBService.shared.storageRef.child(fileName)
+            
+            let uploadTask = uploadImageRef.putData(profileImageData, metadata: nil) { (metadata, error) in
+                
+                if let error = error {
+                    self.popUpEror(error: error)
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    uploadImageRef.downloadURL(completion: { (url, error) in
+                        if let url = url {
+                            let param = ["fullName": name,
+                                         "email" : email,
+                                         "profileImageUrl" :  url.absoluteString]
+                            
+                            guard let uid = user?.user.uid else {return}
+                            
+                            DBService.shared.users.child(uid).setValue(param)
+                        }
+                    })
+                }
+            }
+            
+            uploadTask.observe(.success) { (snapshot) in
+                self.dismiss(animated: true, completion: nil)
+            }
+            
+                uploadTask.resume()
+            }
+        
     }
     
     func loginToTheSystem(){

@@ -17,5 +17,6 @@ class DBService {
     
     let allTeams = Database.database().reference().child("Teams")
     let users = Database.database().reference().child("users")
+    let storageRef = Storage.storage().reference().child("image")
 
 }

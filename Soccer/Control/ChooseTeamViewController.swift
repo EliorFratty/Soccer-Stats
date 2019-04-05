@@ -35,22 +35,36 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkIfUserIsLoggedIn()
+        allTeams.removeAll()
+        tblView.reloadData()
     }
     
     func checkIfUserIsLoggedIn() {
         if Auth.auth().currentUser?.uid == nil {
+            
             let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
             self.present(viewCntroller, animated: true, completion: nil)
+            
         } else {
+            
             uid = Auth.auth().currentUser?.uid
-            DBService.shared.users.child(uid!).observeSingleEvent(of: .value) { (snapshot) in
+            
+            DBService.shared.users.child(uid!).observe(.value) { [self] (snapshot) in
                 if let dict = snapshot.value as? [String:Any] {
-                    if let name = dict["Name"] as? String {
-                    self.navigationItem.title = "Hello \(name)"
+
+                    if let name = dict["fullName"] as? String,
+                       let email = dict["email"] as? String,
+                       let profileImageUrl = dict["profileImageUrl"] as? String{
+                        TeamViewController.player = Player(fullName: name, email:email, profileImageUrl:profileImageUrl)
+                        
+                        self.navigationItem.title = "Hello \(name)"
                     }
+                } else {
+                     TeamViewController.player = Player(fullName: "ploni almoni", email:"ploniAlmoni@gamel.com", profileImageUrl:"profileImageUrl")
                 }
+                
+                self.reciveTeamsFromDB()
             }
-            reciveTeamsFromDB()
         }
     }
     
@@ -59,6 +73,10 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     func reciveTeamsFromDB() {
 
         guard let uid = Auth.auth().currentUser?.uid else {print("Error") ; return }
+        
+        if allTeams.isEmpty {
+            self.activityIndic.stopAnimating()
+        }
         
         allTeams.removeAll()
         DBService.shared.users.child(uid).child("teams").observe(.childAdded) { [self] (snapshot) in
@@ -69,6 +87,7 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
             let team = Team()
             team.name = snapDict["name"] as? String
             team.date = snapDict["date"] as? String
+            team.teamImoji = snapDict["imoji"] as? String ?? "⚽️"
             
             self.allTeams.append(team)
             
@@ -77,8 +96,7 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
     }
-        
-
+    
     // MARK: - tableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -91,14 +109,20 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! ChooseTeamTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! chooseTeamCell
+        
+        var myTeam = Team()
 
         if searching {
-            cell.teamNameLabel.text = searchedTeam[indexPath.row].name
+             myTeam = searchedTeam[indexPath.row]
         } else {
-            cell.teamNameLabel.text = allTeams[indexPath.row].name
+             myTeam = allTeams[indexPath.row]
         }
-        
+
+            cell.titleLabel.text = myTeam.name
+            cell.subTitleLabel.text = myTeam.date
+            cell.imojiLabel.text = myTeam.teamImoji
+
         return cell
     }
     
@@ -108,25 +132,24 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
+        let teamToRemove: String
+
         if searching {
-            let teamToRemove = searchedTeam[indexPath.row].name!
-            self.searchedTeam.remove(at: indexPath.row)
             
-            self.tblView.deleteRows(at: [indexPath], with: .automatic )
-            
+            teamToRemove = searchedTeam[indexPath.row].name!
             deleteTeamFromTeams(teamToDelete: teamToRemove)
-            DBService.shared.users.child(uid!).child("teams").child(teamToRemove).removeValue { (error, ref) in}
             
         } else {
-            let teamToRemove = allTeams[indexPath.row].name!
-
-            self.allTeams.remove(at: indexPath.row)
             
-            self.tblView.deleteRows(at: [indexPath], with: .automatic )
+             teamToRemove = allTeams[indexPath.row].name!
             
-             DBService.shared.users.child(uid!).child("teams").child(teamToRemove).removeValue { (error, ref) in}
         }
         
+        self.searchedTeam.remove(at: indexPath.row)
+        self.tblView.deleteRows(at: [indexPath], with: .automatic )
+        
+        DBService.shared.users.child(uid!).child("teams").child(teamToRemove).removeValue { (error, ref) in}
+  
     }
     
     func deleteTeamFromTeams(teamToDelete: String) {
@@ -171,11 +194,12 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     @objc func addTeamToUser(){
-        
+
         performSegue(withIdentifier: "createNewTeam", sender: self)
     
     }
     
+   
     @objc func searchTeamFromAllUsers(){
         let searchTeamTableTableViewController = SearchTeamTableTableViewController()
         let navController = UINavigationController(rootViewController: searchTeamTableTableViewController)
@@ -184,11 +208,9 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
     
     // MARK: - Navigation
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //send array of all teams in DB
         if let addTeamVC = segue.destination as? AddTeamViewController {
-             let uid = Auth.auth().currentUser?.uid
             addTeamVC.teams = allTeams
             addTeamVC.uid = uid
         } else if let _ = segue.destination as? TeamViewController {
@@ -196,10 +218,20 @@ class ChooseTeamViewController: UIViewController, UITableViewDataSource, UITable
         }
     }
 
+    @IBAction func logoutTapped(_ sender: Any) {
+        try! Auth.auth().signOut()
+        
+        let viewCntroller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController")
+        self.present(viewCntroller, animated: true, completion: nil)
+        navigationController?.popToRootViewController(animated: true)
+        
+    }
+    
 }
 
-class ChooseTeamTableViewCell: UITableViewCell {
+class chooseTeamCell: UITableViewCell {
     
-    @IBOutlet weak var teamNameLabel: UILabel!
-    
+    @IBOutlet weak var subTitleLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var imojiLabel: UILabel!
 }

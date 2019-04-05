@@ -24,7 +24,9 @@
 		CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD502242D56A0039D551 /* AddTeamViewController.swift */; };
 		CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD512242D56A0039D551 /* TeamViewController.swift */; };
 		CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD5E2242D6C10039D551 /* LogInViewController.swift */; };
+		CEB2DAA6225778B9007B4286 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB2DAA5225778B9007B4286 /* Extensions.swift */; };
 		CEEB69EC224FEFEC001362D8 /* SearchTeamTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */; };
+		CEF730DA225679FF001371A4 /* testViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF730D9225679FF001371A4 /* testViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,7 +49,9 @@
 		CE75DD502242D56A0039D551 /* AddTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD512242D56A0039D551 /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD5E2242D6C10039D551 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		CEB2DAA5225778B9007B4286 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTeamTableTableViewController.swift; sourceTree = "<group>"; };
+		CEF730D9225679FF001371A4 /* testViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testViewController.swift; sourceTree = "<group>"; };
 		F405DEB31B3C2A1B3DC12513 /* Pods-Soccer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soccer.release.xcconfig"; path = "Target Support Files/Pods-Soccer/Pods-Soccer.release.xcconfig"; sourceTree = "<group>"; };
 		FFA67EA3F3AC896ADA4EAE66 /* Pods_Soccer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Soccer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -115,6 +119,7 @@
 		CE75DD3D2242D47F0039D551 /* Supporting files */ = {
 			isa = PBXGroup;
 			children = (
+				CEB2DAA5225778B9007B4286 /* Extensions.swift */,
 				CE75DD2E2242D3D00039D551 /* Assets.xcassets */,
 				CE75DD272242D3CF0039D551 /* AppDelegate.swift */,
 				CE75DD302242D3D00039D551 /* LaunchScreen.storyboard */,
@@ -144,6 +149,7 @@
 				CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */,
 				CE75DD512242D56A0039D551 /* TeamViewController.swift */,
 				CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */,
+				CEF730D9225679FF001371A4 /* testViewController.swift */,
 			);
 			path = Control;
 			sourceTree = "<group>";
@@ -285,6 +291,7 @@
 			files = (
 				CE75DD572242D56A0039D551 /* ChooseTeamViewController.swift in Sources */,
 				CE75DD472242D5440039D551 /* PlayersInTeams.swift in Sources */,
+				CEF730DA225679FF001371A4 /* testViewController.swift in Sources */,
 				CE75DD462242D5440039D551 /* Player.swift in Sources */,
 				CE75DD4A2242D5440039D551 /* DBService.swift in Sources */,
 				CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */,
@@ -292,6 +299,7 @@
 				CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */,
 				CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */,
 				CE75DD562242D56A0039D551 /* PlayersTableViewController.swift in Sources */,
+				CEB2DAA6225778B9007B4286 /* Extensions.swift in Sources */,
 				CE75DD482242D5440039D551 /* Team.swift in Sources */,
 				CE1CE78622477CC2007971A9 /* weatherViewController.swift in Sources */,
 				CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */,

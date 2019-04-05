@@ -11,6 +11,7 @@ target 'Soccer' do
     pod 'Firebase/Auth'
     pod 'Firebase/Core'
     pod 'Firebase/Database'
+    pod 'Firebase/Storage'
 
 
 end

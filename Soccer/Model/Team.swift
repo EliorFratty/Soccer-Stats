@@ -12,7 +12,7 @@ class Team: NSObject {
     
     var date: String?
     var name: String?
-    //var players = [Player]()
-
+    var teamImoji = "⚽️"
+    var teamSummary: String?
 
 }
