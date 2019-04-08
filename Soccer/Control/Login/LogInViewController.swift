@@ -39,6 +39,9 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         let tf = UITextField()
         tf.placeholder = "Name"
         tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.clearButtonMode = .whileEditing
+        tf.keyboardType = .emailAddress
+
         return tf
     }()
     
@@ -53,6 +56,9 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         let tf = UITextField()
         tf.placeholder = "Email"
         tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.keyboardType = .emailAddress
+        tf.clearButtonMode = .whileEditing
+
         return tf
     }()
     
@@ -69,6 +75,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         tf.placeholder = "Password"
         tf.isSecureTextEntry = true
         tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.clearButtonMode = .whileEditing
         
         return tf
     }()
@@ -137,6 +144,8 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         setUpProfileImageView()
         
     }
+    
+    //MARK: - Anchor's
     // need x, y, width, height
     
     func setUploginRegisterSegmentedControl() {
@@ -209,16 +218,19 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         passwordTextFieldHeightAnchor?.isActive = true
     }
     
-    // MARK: - Register
+    // MARK: - Register & Login
     
-    @objc func registerLoginTapped() {
+    @objc func registerLoginTapped(_ sender: UIButton) {
+        sender.pulsate()
         
-     loginRegisterSegmentedControl.selectedSegmentIndex == 1 ? registerToTheSystem() : loginToTheSystem()
+        loginRegisterSegmentedControl.selectedSegmentIndex == 1 ? registerToTheSystem() : loginToTheSystem()
         
     }
     
     func registerToTheSystem(){
-        guard let email = emailTextFiled.text, let pass = passwordTextFiled.text, let name = nameTextFiled.text else { return }
+        guard let email = emailTextFiled.text,
+            let pass = passwordTextFiled.text,
+            let name = nameTextFiled.text else { return }
         
         Auth.auth().createUser(withEmail: email, password: pass) { (user, error) in
             
@@ -227,10 +239,9 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
                 return
             }
             
-            guard let userID = user?.user.uid else {return}
-            
-            guard let profileImage = self.profileImageView.image else { print("error");return}
-            guard let profileImageData = profileImage.jpegData(compressionQuality: 0.1) else { print("error2");return}
+            guard let userID = user?.user.uid else {return}  
+            guard let profileImage = self.profileImageView.image else { print("errorSetImage");return}
+            guard let profileImageData = profileImage.jpegData(compressionQuality: 0.1) else { print("errorSetImageData");return}
             let fileName = "\(userID).jpg"
             
             let uploadImageRef = DBService.shared.storageRef.child(fileName)
@@ -249,9 +260,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                          "email" : email,
                                          "profileImageUrl" :  url.absoluteString]
                             
-                            guard let uid = user?.user.uid else {return}
-                            
-                            DBService.shared.users.child(uid).setValue(param)
+                            DBService.shared.users.child(userID).setValue(param)
                         }
                     })
                 }
@@ -262,8 +271,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
             }
             
                 uploadTask.resume()
-            }
-        
+        }   
     }
     
     func loginToTheSystem(){
@@ -310,21 +318,5 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
             emailTextFiled.text = ""
             passwordTextFiled.text = ""
         }
-    }
-}
-
-extension UIViewController {
-    func popUpEror(error: Error){
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        let action = UIAlertAction(title: "Retary", style: .default, handler: nil)
-        alert.addAction(action)
-        present(alert,animated: true, completion: nil)
-    }
-    
-    func popUpEror(error123: String){
-        let alert = UIAlertController(title: "Error", message: error123, preferredStyle: .alert)
-        let action = UIAlertAction(title: "Retary", style: .default, handler: nil)
-        alert.addAction(action)
-        present(alert,animated: true, completion: nil)
     }
 }

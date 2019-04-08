@@ -10,6 +10,7 @@ import Foundation
 
 struct Player {
 
+    var id: String?
      var fullName: String
      var email: String
      var profileImageUrl: String

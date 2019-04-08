@@ -9,56 +9,8 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Soccer/Control/ChooseTeamViewController.swift"
-            timestampString = "576159107.829556"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "reciveTeamsFromDB()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Soccer.ChooseTeamViewController.reciveTeamsFromDB() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/ChooseTeamViewController.swift"
-                  timestampString = "574888910.091445"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42"
-                  offsetFromSymbolStart = "92">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (__C.FIRDataSnapshot) -&gt; () in Soccer.ChooseTeamViewController.reciveTeamsFromDB() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/ChooseTeamViewController.swift"
-                  timestampString = "574888910.0943151"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "40"
-                  endingLineNumber = "40"
-                  offsetFromSymbolStart = "56">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Soccer/Control/PlayersTableViewController.swift"
-            timestampString = "576159107.82964"
+            timestampString = "576448688.855244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
@@ -74,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Soccer/Control/weatherViewController.swift"
-            timestampString = "575488626.372502"
+            timestampString = "576316961.282602"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "55"
@@ -121,188 +73,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Soccer/Control/AddTeamViewController.swift"
-            timestampString = "576159107.830151"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "prepare(for:sender:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Soccer/Control/PlayersTableViewController.swift"
-            timestampString = "576159107.830217"
+            timestampString = "576448688.855358"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "203"
             endingLineNumber = "203"
             landmarkName = "checkIfNameExsists(playerName:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Soccer/Control/ChooseTeamViewController.swift"
-            timestampString = "576159107.830628"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "checkIfUserIsLoggedIn()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Soccer.ChooseTeamViewController.checkIfUserIsLoggedIn() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/ChooseTeamViewController.swift"
-                  timestampString = "575905237.09068"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "49"
-                  endingLineNumber = "49"
-                  offsetFromSymbolStart = "928">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Soccer.ChooseTeamViewController.checkIfUserIsLoggedIn() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/ChooseTeamViewController.swift"
-                  timestampString = "575905237.093833"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "49"
-                  endingLineNumber = "49"
-                  offsetFromSymbolStart = "1276">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (__C.FIRDataSnapshot) -&gt; () in Soccer.ChooseTeamViewController.checkIfUserIsLoggedIn() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/ChooseTeamViewController.swift"
-                  timestampString = "575905237.096885"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
-                  offsetFromSymbolStart = "48">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Soccer/Control/PlayersTableViewController.swift"
-            timestampString = "576159107.830707"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
-            landmarkName = "importPlayerFromDB()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Soccer/Control/PlayersTableViewController.swift"
-            timestampString = "576159107.831076"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "importPlayerFromDB()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Soccer/Control/PlayersTableViewController.swift"
-            timestampString = "576159107.831442"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "importPlayerFromDB()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Soccer.PlayersTableViewController.importPlayerFromDB() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/PlayersTableViewController.swift"
-                  timestampString = "575906803.068876"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "36"
-                  endingLineNumber = "36"
-                  offsetFromSymbolStart = "240">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Soccer.PlayersTableViewController.importPlayerFromDB() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/PlayersTableViewController.swift"
-                  timestampString = "575906803.072033"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "36"
-                  endingLineNumber = "36"
-                  offsetFromSymbolStart = "736">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (__C.FIRDataSnapshot) -&gt; () in Soccer.PlayersTableViewController.importPlayerFromDB() -&gt; ()"
-                  moduleName = "Soccer"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/Soccer/Soccer/Control/PlayersTableViewController.swift"
-                  timestampString = "575906803.07513"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "37"
-                  endingLineNumber = "37"
-                  offsetFromSymbolStart = "52">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

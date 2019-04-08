@@ -20,16 +20,23 @@ class SearchTeamTableTableViewController: UITableViewController {
         
         makeNavBar()
         reciveTeamsFromDB()
-        tableView.register(teamCell.self, forCellReuseIdentifier: cellID)
+        tableView.register(ChooseTeamCell.self, forCellReuseIdentifier: cellID)
 
     }
     
     func makeNavBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addTeamToDB))
+
     }
     
     @objc func cancelTapped(){
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func addTeamToDB(){
+        let addTeamViewController = AddTeamViewController()
+        navigationController?.pushViewController(addTeamViewController, animated: true)
     }
     
     func reciveTeamsFromDB() {
@@ -40,6 +47,7 @@ class SearchTeamTableTableViewController: UITableViewController {
             let team = Team()
             team.name = snapDict["name"] as? String
             team.date = snapDict["date"] as? String
+            team.teamImoji = snapDict["imoji"] as? String ?? "⚽️"
             
             self.allTeam.append(team)
             
@@ -57,10 +65,11 @@ class SearchTeamTableTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-        cell.textLabel?.text = allTeam[indexPath.row].name
-        cell.detailTextLabel?.text = allTeam[indexPath.row].date
+       
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! ChooseTeamCell
         
+        cell.team = allTeam[indexPath.row]
+
         return cell
     }
     
@@ -68,26 +77,13 @@ class SearchTeamTableTableViewController: UITableViewController {
         
         let uid = Auth.auth().currentUser?.uid
         
-        let teamParam = [
-            "name": allTeam[indexPath.row].name,
-            "date" : allTeam[indexPath.row].date
-        ]
+        let teamParam = ["team": allTeam[indexPath.row].name]
         
         if let uid = uid, let newTeam =  allTeam[indexPath.row].name{
-            DBService.shared.users.child(uid).child("teams").child(newTeam).setValue(teamParam)
+            DBService.shared.users.child(uid).child("teams").child(newTeam).setValue(teamParam) { (eror, ref) in
+                print("**")
+                self.dismiss(animated: true, completion: nil)
+            }
         }
-        dismiss(animated: true, completion: nil)
     }
-}
-
-class teamCell: UITableViewCell {
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
 }
