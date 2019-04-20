@@ -8,6 +8,20 @@
 
 import UIKit
 
+
+enum MenuOption: Int, CustomStringConvertible {
+    
+    case logout
+    
+    var description: String {
+        switch self {
+        case .logout:
+            return "Logout"
+        }
+    }
+  
+}
+
 let imageCache = NSCache<AnyObject, AnyObject>()
 
 extension UIImageView{
@@ -25,7 +39,9 @@ extension UIImageView{
         
         let url = URL(string: URLString)
         
-        URLSession.shared.dataTask(with: url!) { (data, response, error) in
+        guard let url2 = url else {print("cantuplaodImageWith?url") ; return}
+        
+        URLSession.shared.dataTask(with: url2) { (data, response, error) in
             if let error = error {
                print(error)
                 return
@@ -105,40 +121,11 @@ extension UIViewController {
         present(alert,animated: true, completion: nil)
     }
     
-    func popUpEror(error123: String){
-        let alert = UIAlertController(title: "Error", message: error123, preferredStyle: .alert)
+    func popUpEror(error: String){
+        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
         let action = UIAlertAction(title: "Retary", style: .default, handler: nil)
         alert.addAction(action)
         present(alert,animated: true, completion: nil)
     }
 }
 
-extension UIView {
-    
-    func anchor(top: NSLayoutYAxisAnchor? = nil, left: NSLayoutXAxisAnchor? = nil,bottom:NSLayoutYAxisAnchor? = nil,right: NSLayoutXAxisAnchor? = nil,
-                    paddindTop:CGFloat? = 0,paddindLeft:CGFloat? = 0,paddindBottom:CGFloat? = 0,paddindRight:CGFloat? = 0,
-                    width:CGFloat? = 0, height:CGFloat? = 0) {
-        
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        if let top = top {
-            topAnchor.constraint(equalTo: top, constant: paddindTop!).isActive = true
-        }
-        if let left = left {
-            leftAnchor.constraint(equalTo: left, constant: paddindLeft!).isActive = true
-        }
-        if let bottom = bottom {
-            bottomAnchor.constraint(equalTo: bottom, constant: -paddindBottom!).isActive = true
-        }
-        if let right = right {
-            rightAnchor.constraint(equalTo: right, constant: -paddindRight!).isActive = true
-        }
-        if let width = width {
-            widthAnchor.constraint(equalToConstant: width).isActive = true
-        }
-        if let height = height {
-            heightAnchor.constraint(equalToConstant: height).isActive = true
-        }
-    }
-    
-}

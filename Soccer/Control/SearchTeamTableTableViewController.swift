@@ -10,18 +10,46 @@ import UIKit
 import Firebase
 
 
-class SearchTeamTableTableViewController: UITableViewController {
+class SearchTeamTableTableViewController: UIViewController{
 
-    var allTeam = [Team]()
+    var allTeams = [Team]()
     let cellID = "theSearchCell"
+    var searchedTeam = [Team]()
+    var searching = false
+    
+    let searchBar: UISearchBar = {
+        let sb = UISearchBar()
+            sb.translatesAutoresizingMaskIntoConstraints = false
+        
+        return sb
+    }()
+    
+    lazy var tableView: UITableView = {
+       let tb = UITableView()
+        tb.register(ChooseTeamCell.self, forCellReuseIdentifier: cellID)
+        tb.backgroundColor = .darkGray
+        tb.keyboardDismissMode = .onDrag
+        tb.separatorStyle = .none
+        
+        tb.translatesAutoresizingMaskIntoConstraints = false
+        return tb
+    }()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeNavBar()
+        searchBar.delegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        view.addSubview(searchBar)
+        view.addSubview(tableView)
+        
         reciveTeamsFromDB()
-        tableView.register(ChooseTeamCell.self, forCellReuseIdentifier: cellID)
-
+        makeNavBar()
+        configurateSearchBar()
+        configurateTableView()
     }
     
     func makeNavBar() {
@@ -39,6 +67,26 @@ class SearchTeamTableTableViewController: UITableViewController {
         navigationController?.pushViewController(addTeamViewController, animated: true)
     }
     
+    func configurateSearchBar() {
+        //x,y,width,height
+
+        searchBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        searchBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive =  true
+        searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+    }
+    
+    func configurateTableView() {
+
+        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
+    // MARK: - Servies
+    
     func reciveTeamsFromDB() {
 
         DBService.shared.allTeams.observe(.childAdded) { [self] (snapshot) in
@@ -49,41 +97,86 @@ class SearchTeamTableTableViewController: UITableViewController {
             team.date = snapDict["date"] as? String
             team.teamImoji = snapDict["imoji"] as? String ?? "⚽️"
             
-            self.allTeam.append(team)
+            self.allTeams.append(team)
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         }
     }
+}
 
+// MARK: - TableView Functions
+
+
+extension SearchTeamTableTableViewController: UITableViewDataSource, UITableViewDelegate {
     // MARK: - Table view data source
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-            return allTeam.count
+        if searching {
+            return searchedTeam.count
+        } else {
+            return allTeams.count
+        }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! ChooseTeamCell
         
-        cell.team = allTeam[indexPath.row]
-
+        var myTeam = Team()
+        
+        if searching {
+            myTeam = searchedTeam[indexPath.row]
+        } else {
+            myTeam = allTeams[indexPath.row]
+        }
+        
+        cell.team = myTeam
+        
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let uid = Auth.auth().currentUser?.uid
         
-        let teamParam = ["team": allTeam[indexPath.row].name]
+        var teamClicked = Team()
         
-        if let uid = uid, let newTeam =  allTeam[indexPath.row].name{
-            DBService.shared.users.child(uid).child("teams").child(newTeam).setValue(teamParam) { (eror, ref) in
-                print("**")
-                self.dismiss(animated: true, completion: nil)
-            }
+        if searching {
+            teamClicked = searchedTeam[indexPath.row]
+        } else {
+            teamClicked = allTeams[indexPath.row]
+        }
+        
+        if let uid = uid, let newTeam = teamClicked.name{
+            
+            DBService.shared.playersInTeam.child(newTeam).updateChildValues([uid: "player id"])
+            DBService.shared.teamOfUser.child(uid).updateChildValues([newTeam: "Team name"])
+            self.dismiss(animated: true, completion: nil)
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
 }
+
+// MARK: - Search Bar Functions
+
+extension SearchTeamTableTableViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchedTeam = allTeams.filter({$0.name!.lowercased().prefix(searchText.count) == searchText.lowercased()})
+        self.searching = true
+        tableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searching = false
+        searchBar.text = ""
+        tableView.reloadData()
+    }
+}
+

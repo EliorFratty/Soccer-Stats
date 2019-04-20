@@ -11,6 +11,30 @@ import Firebase
 
 class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    let activityIndic: UIActivityIndicatorView = {
+        let ai = UIActivityIndicatorView(style: .whiteLarge)
+        ai.translatesAutoresizingMaskIntoConstraints = false
+        ai.startAnimating()
+        
+        return ai
+    }()
+    
+    let loadingContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
+    }()
+    
+    let loadingLabel: UILabel = {
+       let lb = UILabel()
+        lb.text = "Loading..."
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        
+        return lb
+    }()
+    
     let inputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
@@ -137,6 +161,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         view.addSubview(loginRegisterButton)
         view.addSubview(profileImageView)
         view.addSubview(loginRegisterSegmentedControl)
+        
         self.hideKeyboard()
         setupinputContainerViewConstraint()
         setUploginRegisterSegmentedControl()
@@ -188,6 +213,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         inputContainerView.addSubview(passwordTextFiled)
         inputContainerView.addSubview(nameSepratorView)
         inputContainerView.addSubview(emailSepratorView)
+        inputContainerView.addSubview(loadingContainerView)
         
         nameTextFiled.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor, constant: 12).isActive = true
         nameTextFiled.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
@@ -216,13 +242,37 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         passwordTextFiled.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor, constant: -24).isActive = true
         passwordTextFieldHeightAnchor = passwordTextFiled.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 1/3)
         passwordTextFieldHeightAnchor?.isActive = true
+        
+        loadingContainerView.centerXAnchor.constraint(equalTo: inputContainerView.centerXAnchor).isActive = true
+        loadingContainerView.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
+        loadingContainerView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        loadingContainerView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        
+        setuploadingContainerViewConstraint()
+    }
+    
+    func setuploadingContainerViewConstraint(){
+        
+        loadingContainerView.addSubview(activityIndic)
+        loadingContainerView.addSubview(loadingLabel)
+
+        activityIndic.centerXAnchor.constraint(equalTo: loadingContainerView.centerXAnchor).isActive = true
+        activityIndic.topAnchor.constraint(equalTo: loadingContainerView.topAnchor, constant: 5).isActive = true
+        activityIndic.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        activityIndic.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        
+        loadingLabel.centerXAnchor.constraint(equalTo: loadingContainerView.centerXAnchor).isActive = true
+        loadingLabel.bottomAnchor.constraint(equalTo: loadingContainerView.bottomAnchor, constant: 5).isActive = true
+        loadingLabel.widthAnchor.constraint(equalTo: loadingContainerView.widthAnchor, constant: -5).isActive = true
+        loadingLabel.heightAnchor.constraint(equalToConstant: 45).isActive = true
     }
     
     // MARK: - Register & Login
     
     @objc func registerLoginTapped(_ sender: UIButton) {
         sender.pulsate()
-        
+        loadingContainerView.isHidden = false
+        sender.isEnabled = false
         loginRegisterSegmentedControl.selectedSegmentIndex == 1 ? registerToTheSystem() : loginToTheSystem()
         
     }
@@ -232,10 +282,12 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
             let pass = passwordTextFiled.text,
             let name = nameTextFiled.text else { return }
         
-        Auth.auth().createUser(withEmail: email, password: pass) { (user, error) in
+        Auth.auth().createUser(withEmail: email, password: pass) {[self] (user, error) in
             
             if let error = error {
                 self.popUpEror(error: error)
+                self.loginRegisterButton.isEnabled = true
+                self.loadingContainerView.isHidden = true
                 return
             }
             
@@ -261,13 +313,10 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                          "profileImageUrl" :  url.absoluteString]
                             
                             DBService.shared.users.child(userID).setValue(param)
+                            self.dismiss(animated: true, completion: nil)
                         }
                     })
                 }
-            }
-            
-            uploadTask.observe(.success) { (snapshot) in
-                self.dismiss(animated: true, completion: nil)
             }
             
                 uploadTask.resume()
@@ -286,6 +335,8 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
                 UserDefaults.standard.set(pass, forKey: "userPass")
             } else {
                 self.popUpEror(error: error!)
+                self.loginRegisterButton.isEnabled = true
+                self.loadingContainerView.isHidden = true
             }
         }
     }

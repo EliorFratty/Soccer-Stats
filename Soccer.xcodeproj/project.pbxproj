@@ -15,7 +15,6 @@
 		CE75DD2F2242D3D00039D551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD2E2242D3D00039D551 /* Assets.xcassets */; };
 		CE75DD322242D3D00039D551 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD302242D3D00039D551 /* LaunchScreen.storyboard */; };
 		CE75DD3A2242D44F0039D551 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD392242D44F0039D551 /* GoogleService-Info.plist */; };
-		CE75DD3F2242D51A0039D551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD3E2242D51A0039D551 /* Main.storyboard */; };
 		CE75DD462242D5440039D551 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD412242D5440039D551 /* Player.swift */; };
 		CE75DD472242D5440039D551 /* PlayersInTeams.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD422242D5440039D551 /* PlayersInTeams.swift */; };
 		CE75DD482242D5440039D551 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD432242D5440039D551 /* Team.swift */; };
@@ -24,6 +23,9 @@
 		CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD502242D56A0039D551 /* AddTeamViewController.swift */; };
 		CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD512242D56A0039D551 /* TeamViewController.swift */; };
 		CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD5E2242D6C10039D551 /* LogInViewController.swift */; };
+		CE9C462B22634501008DCD5F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE9C462A22634500008DCD5F /* Main.storyboard */; };
+		CEA218DA2265ACBE001BC7C9 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA218D92265ACBE001BC7C9 /* Game.swift */; };
+		CEA218E02265E476001BC7C9 /* GameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA218DF2265E476001BC7C9 /* GameCell.swift */; };
 		CEB2DAA6225778B9007B4286 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB2DAA5225778B9007B4286 /* Extensions.swift */; };
 		CEEB69EC224FEFEC001362D8 /* SearchTeamTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */; };
 		CEF3D4B62259D7A400E30E7E /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF3D4B52259D7A400E30E7E /* MenuController.swift */; };
@@ -31,6 +33,8 @@
 		CEF42058225B215C00D1E784 /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF42057225B215C00D1E784 /* ContainerController.swift */; };
 		CEF4205A225B251C00D1E784 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF42059225B251C00D1E784 /* HomeController.swift */; };
 		CEF4205C225B280D00D1E784 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF4205B225B280D00D1E784 /* Protocols.swift */; };
+		CEFCFEA822662956008E39F0 /* PreviousGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFCFEA722662956008E39F0 /* PreviousGameViewController.swift */; };
+		CEFCFEAA226629E1008E39F0 /* FutureGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFCFEA9226629E1008E39F0 /* FutureGameViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,7 +48,6 @@
 		CE75DD312242D3D00039D551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE75DD332242D3D00039D551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE75DD392242D44F0039D551 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		CE75DD3E2242D51A0039D551 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		CE75DD412242D5440039D551 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		CE75DD422242D5440039D551 /* PlayersInTeams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayersInTeams.swift; sourceTree = "<group>"; };
 		CE75DD432242D5440039D551 /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
@@ -53,6 +56,9 @@
 		CE75DD502242D56A0039D551 /* AddTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD512242D56A0039D551 /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD5E2242D6C10039D551 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		CE9C462A22634500008DCD5F /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		CEA218D92265ACBE001BC7C9 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		CEA218DF2265E476001BC7C9 /* GameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCell.swift; sourceTree = "<group>"; };
 		CEB2DAA5225778B9007B4286 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTeamTableTableViewController.swift; sourceTree = "<group>"; };
 		CEF3D4B52259D7A400E30E7E /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
@@ -60,6 +66,8 @@
 		CEF42057225B215C00D1E784 /* ContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
 		CEF42059225B251C00D1E784 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		CEF4205B225B280D00D1E784 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		CEFCFEA722662956008E39F0 /* PreviousGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviousGameViewController.swift; sourceTree = "<group>"; };
+		CEFCFEA9226629E1008E39F0 /* FutureGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FutureGameViewController.swift; sourceTree = "<group>"; };
 		F405DEB31B3C2A1B3DC12513 /* Pods-Soccer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soccer.release.xcconfig"; path = "Target Support Files/Pods-Soccer/Pods-Soccer.release.xcconfig"; sourceTree = "<group>"; };
 		FFA67EA3F3AC896ADA4EAE66 /* Pods_Soccer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Soccer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -96,8 +104,10 @@
 		CE28E7CA225932B500923AF0 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				CE9C462A22634500008DCD5F /* Main.storyboard */,
 				CE28E7CB225932F200923AF0 /* UserCell.swift */,
 				CEF3D4B82259DE9200E30E7E /* chooseTeamCell.swift */,
+				CEA218DF2265E476001BC7C9 /* GameCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -123,7 +133,6 @@
 		CE75DD262242D3CF0039D551 /* Soccer */ = {
 			isa = PBXGroup;
 			children = (
-				CE75DD3E2242D51A0039D551 /* Main.storyboard */,
 				CE28E7CA225932B500923AF0 /* View */,
 				CE75DD402242D5370039D551 /* Model */,
 				CE75DD4B2242D5580039D551 /* Control */,
@@ -154,6 +163,7 @@
 				CE75DD422242D5440039D551 /* PlayersInTeams.swift */,
 				CE75DD432242D5440039D551 /* Team.swift */,
 				CE1CE783224774CE007971A9 /* WeatherJSON.swift */,
+				CEA218D92265ACBE001BC7C9 /* Game.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -161,13 +171,14 @@
 		CE75DD4B2242D5580039D551 /* Control */ = {
 			isa = PBXGroup;
 			children = (
-				CE1CE78522477CC2007971A9 /* weatherViewController.swift */,
+				CEFCFEA722662956008E39F0 /* PreviousGameViewController.swift */,
+				CEFCFEA9226629E1008E39F0 /* FutureGameViewController.swift */,
 				CE75DD622242DA390039D551 /* Login */,
 				CE75DD502242D56A0039D551 /* AddTeamViewController.swift */,
 				CE75DD512242D56A0039D551 /* TeamViewController.swift */,
 				CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */,
 				CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */,
-				CEF42059225B251C00D1E784 /* HomeController.swift */,
+				CE1CE78522477CC2007971A9 /* weatherViewController.swift */,
 				CEF3D4B72259D7AF00E30E7E /* Side bar */,
 			);
 			path = Control;
@@ -184,6 +195,7 @@
 		CEF3D4B72259D7AF00E30E7E /* Side bar */ = {
 			isa = PBXGroup;
 			children = (
+				CEF42059225B251C00D1E784 /* HomeController.swift */,
 				CEF3D4B52259D7A400E30E7E /* MenuController.swift */,
 				CEF42057225B215C00D1E784 /* ContainerController.swift */,
 			);
@@ -251,9 +263,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE75DD322242D3D00039D551 /* LaunchScreen.storyboard in Resources */,
-				CE75DD3F2242D51A0039D551 /* Main.storyboard in Resources */,
 				CE75DD3A2242D44F0039D551 /* GoogleService-Info.plist in Resources */,
 				CE75DD2F2242D3D00039D551 /* Assets.xcassets in Resources */,
+				CE9C462B22634501008DCD5F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,9 +337,12 @@
 				CEEB69EC224FEFEC001362D8 /* SearchTeamTableTableViewController.swift in Sources */,
 				CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */,
 				CE28E7CC225932F200923AF0 /* UserCell.swift in Sources */,
+				CEFCFEAA226629E1008E39F0 /* FutureGameViewController.swift in Sources */,
+				CEFCFEA822662956008E39F0 /* PreviousGameViewController.swift in Sources */,
 				CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */,
 				CE75DD562242D56A0039D551 /* PlayersTableViewController.swift in Sources */,
 				CEF3D4B92259DE9200E30E7E /* chooseTeamCell.swift in Sources */,
+				CEA218DA2265ACBE001BC7C9 /* Game.swift in Sources */,
 				CEB2DAA6225778B9007B4286 /* Extensions.swift in Sources */,
 				CE75DD482242D5440039D551 /* Team.swift in Sources */,
 				CE1CE78622477CC2007971A9 /* weatherViewController.swift in Sources */,
@@ -336,6 +351,7 @@
 				CE75DD282242D3CF0039D551 /* AppDelegate.swift in Sources */,
 				CEF4205A225B251C00D1E784 /* HomeController.swift in Sources */,
 				CEF42058225B215C00D1E784 /* ContainerController.swift in Sources */,
+				CEA218E02265E476001BC7C9 /* GameCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

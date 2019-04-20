@@ -14,10 +14,21 @@ struct Player {
      var fullName: String
      var email: String
      var profileImageUrl: String
-//    private let email: String
-//    private let age: Int
-    
 
+    
+    init() {
+        id = ""
+        fullName = ""
+        email = ""
+        profileImageUrl = ""
+    }
+
+init(id: String ,fullName:String, email:String, ProfileUrl:String){
+    self.id = id
+    self.fullName = fullName
+    self.email = email
+    profileImageUrl = ProfileUrl
+}
     
 
 }
