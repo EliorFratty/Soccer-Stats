@@ -8,13 +8,22 @@
 
 import UIKit
 
+protocol gameCellDelegate {
+    func IsComingToGame(yesOrNo: Bool, date: String)
+}
+
 class GameCell: UITableViewCell {
     
+    var delegate: gameCellDelegate?
+    var isComing = false
+
     var Game: Game? {
         didSet{
             if let game = Game {
             textLabel?.text = game.date + "          " + game.hour
             detailTextLabel?.text = game.place
+            isComing = game.isComing
+            confirmGame()
             }
         }
     }
@@ -26,10 +35,8 @@ class GameCell: UITableViewCell {
         detailTextLabel?.frame = CGRect(x: 20, y: detailTextLabel!.frame.origin.y+2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
     }
     
-    let confirmButton:UIButton = {
+    lazy var confirmButton:UIButton = {
         let button = UIButton()
-        button.backgroundColor = .red
-        button.setTitle("No", for: .normal)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -44,7 +51,6 @@ class GameCell: UITableViewCell {
         addSubview(confirmButton)
         confirmButtonAnchor()
         confirmButton.addTarget(self, action: #selector(confirmGame), for: .touchUpInside)
-  
     }
     
 
@@ -56,16 +62,17 @@ class GameCell: UITableViewCell {
         confirmButton.heightAnchor.constraint(equalToConstant: 38).isActive = true
     }
     
-    var isComing = false
-    
     @objc func confirmGame(){
-
-        if isComing {
+        
+        if !isComing {
             confirmButton.backgroundColor = .red
             confirmButton.setTitle("No", for: .normal)
         } else {
             confirmButton.backgroundColor = .green
             confirmButton.setTitle("Yes", for: .normal)
+        }
+        if let game = Game {
+            delegate?.IsComingToGame(yesOrNo: isComing, date: game.date)
         }
         isComing = !isComing
     }

@@ -16,6 +16,10 @@ class TeamViewController: UIViewController {
     var datePicker: UIDatePicker?
     let cellId = "gameCell"
     var isOpen = true
+    
+    static var team : Team!
+    let player = HomeController.userAsPlayer
+    let userTeam = TeamViewController.team
 
     var games = [Game]()
 
@@ -62,6 +66,21 @@ class TeamViewController: UIViewController {
         return button
     }()
     
+    lazy var newGameCancelButton : UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .black
+        button.setTitle("Cancel", for: .normal)
+        button.setTitleColor(.red, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
+        
+        button.addTarget(self, action: #selector(newGameCancelButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     lazy var tableView: UITableView = {
         let tb = UITableView()
         tb.translatesAutoresizingMaskIntoConstraints = false
@@ -69,11 +88,6 @@ class TeamViewController: UIViewController {
         tb.register(GameCell.self, forCellReuseIdentifier: cellId)
         return tb
     }()
-    
-    
-    static var team : Team!
-    let player = HomeController.userAsPlayer
-    let userTeam = TeamViewController.team
 
     let inputContainerView: UIView = {
         let view = UIView()
@@ -168,15 +182,15 @@ class TeamViewController: UIViewController {
     func getAllGamesFromDB() {
         guard let userTeam = userTeam else {return}
         guard let userTeamName = userTeam.name else {return}
-        print("a")
 
-        DBService.shared.games.child(userTeamName).observe(.value) { (snapshot) in
+        DBService.shared.games.child(userTeamName).observeSingleEvent(of: .value) { (snapshot) in
             if let teamGames = snapshot.value as? [String:[String:Any]] {
                 for games in teamGames {
                     let date = games.key
                     let hour = games.value["hour"] as! String
                     let location = games.value["location"] as! String
-                    let game = Game(date:date, hour: hour, place: location)
+                    let isComing = self.checkIfPlayerIsComingToGame(playersInGame: games.value["players"] as? [String:Any])
+                    let game = Game(date:date, hour: hour, place: location, isComing: isComing)
                     self.games.append(game)
 
                 }
@@ -185,15 +199,16 @@ class TeamViewController: UIViewController {
         }
     }
     
-//    DBService.shared.teamOfUser.child(uid).observeSingleEvent(of: .value) { [self] (snapshot) in
-//
-//    if let teamsName = snapshot.value as? [String:Any] {
-//
-//    for teamName in teamsName {
-//    self.getUserTeamDetailesFromDB(teamName: teamName.key)
-//    }
-//    }
-//    }
+    func checkIfPlayerIsComingToGame(playersInGame: [String:Any]?) -> Bool{
+        if let pGames = playersInGame {
+            for playerInGame in pGames {
+                if playerInGame.key == player.fullName {
+                    return true
+                }
+            }
+        }
+        return false
+    }
     
     // MARK:- Anchors
     var tableViewHeightAnchor = NSLayoutConstraint()
@@ -234,9 +249,9 @@ class TeamViewController: UIViewController {
         tableViewHeightAnchor = tableView.heightAnchor.constraint(equalToConstant: 0)
         tableViewHeightAnchor.isActive = true
 
-        addNewGameButton.topAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: 20).isActive = true
-        addNewGameButton.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor).isActive = true
-        addNewGameButton.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor, multiplier: 1/2) .isActive = true
+        addNewGameButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        addNewGameButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        addNewGameButton.widthAnchor.constraint(equalToConstant: 100) .isActive = true
         addNewGameButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
     }
@@ -244,8 +259,8 @@ class TeamViewController: UIViewController {
     var NewGameInputContainerViewHeightAnchor = NSLayoutConstraint()
     
     func setUpaddNewGameInputContainerView() {
-        addNewGameInputContainerView.topAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: 20).isActive = true
-        addNewGameInputContainerView.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor).isActive = true
+        addNewGameInputContainerView.topAnchor.constraint(equalTo: addNewGameButton.topAnchor, constant: 20).isActive = true
+        addNewGameInputContainerView.leftAnchor.constraint(equalTo: addNewGameButton.leftAnchor, constant: 10).isActive = true
         addNewGameInputContainerView.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor) .isActive = true
         NewGameInputContainerViewHeightAnchor = addNewGameInputContainerView.heightAnchor.constraint(equalToConstant: 0)
         NewGameInputContainerViewHeightAnchor.isActive = true
@@ -253,6 +268,8 @@ class TeamViewController: UIViewController {
         addNewGameInputContainerView.addSubview(newGameAddDateTextField)
         addNewGameInputContainerView.addSubview(newGameAddLocationTextField)
         addNewGameInputContainerView.addSubview(newGameAddButton)
+        addNewGameInputContainerView.addSubview(newGameCancelButton)
+        
 
         newGameAddDateTextField.delegate = self
         newGameAddLocationTextField.delegate = self
@@ -269,8 +286,13 @@ class TeamViewController: UIViewController {
         
         newGameAddButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
         newGameAddButton.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor).isActive = true
-        newGameAddButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor).isActive = true
+        newGameAddButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
         newGameAddButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        newGameCancelButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
+        newGameCancelButton.leftAnchor.constraint(equalTo: newGameAddButton.rightAnchor).isActive = true
+        newGameCancelButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
+        newGameCancelButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
     }
 
@@ -293,6 +315,10 @@ class TeamViewController: UIViewController {
         }
     }
     
+    @objc func newGameCancelButtonTapped() {
+        NewGameInputContainerViewHeightAnchor.constant = 0
+    }
+
     @objc func newGameAddButtonTapped() {
         NewGameInputContainerViewHeightAnchor.constant = 0
         
@@ -336,9 +362,17 @@ class TeamViewController: UIViewController {
     }
     
     @objc func futureGameTapped(){
+        
+        if games.isEmpty {
+            let alert = UIAlertController(title: "No game to show", message: "This team has no game to show", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Ok", style: .default) { (action) in }
+            alert.addAction(action)
+            present(alert,animated: true, completion: nil)
+        }
+        
         if isOpen {
-            self.tableViewHeightAnchor.constant = 150
-            self.inputContainerViewHeightAnchor.constant = 300
+            self.tableViewHeightAnchor.constant = CGFloat(50 * games.count)
+            self.inputContainerViewHeightAnchor.constant = CGFloat(150 + 50 * games.count)
             
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
@@ -395,14 +429,16 @@ extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UIText
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! GameCell
         
         cell.Game = games[indexPath.row]
+        cell.delegate = self
 
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let game = games[indexPath.row]
         let futureGameViewController = FutureGameViewController()
+        futureGameViewController.game = games[indexPath.row]
         present(futureGameViewController, animated: true, completion: nil)
+        
         tableView.deselectRow(at: indexPath, animated: true)
         
     }
@@ -413,4 +449,20 @@ extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UIText
     }
 }
 
-
+extension TeamViewController: gameCellDelegate {
+    
+    func IsComingToGame(yesOrNo: Bool, date: String) {
+        guard let userTeam = userTeam else {return}
+        guard let userTeamName = userTeam.name else {return}
+        
+        
+        if yesOrNo {
+            let param = ["name": player.fullName]
+            DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).setValue(param)
+        } else {
+             DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).removeValue()
+        }
+    }
+    
+    
+}

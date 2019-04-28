@@ -13,4 +13,5 @@ struct Game {
     var date: String
     var hour: String
     var place: String
+    var isComing = false
 }
