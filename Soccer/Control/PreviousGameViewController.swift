@@ -7,10 +7,22 @@
 //
 
 import UIKit
+import Firebase
 
 class PreviousGameViewController: UIViewController {
     
     // MARK:- Propreties
+    
+    var games = [Game]()
+    let cellID = "prevGameCell"
+    
+    lazy var tableView: UITableView = {
+        let tb = UITableView()
+        tb.translatesAutoresizingMaskIntoConstraints = false
+        tb.backgroundColor = .black
+        tb.register(PlayerJoinedToGameCell.self, forCellReuseIdentifier: cellID)
+        return tb
+    }()
 
     lazy var dismissButton : UIButton = {
         let button = UIButton()
@@ -54,6 +66,39 @@ class PreviousGameViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-
-
+    func getAllGamesFromDB() {
+        guard let userTeam = TeamViewController.team else {return}
+        guard let userTeamName = userTeam.name else {return}
+        
+        DBService.shared.games.child(userTeamName).observeSingleEvent(of: .value) { [self] (snapshot) in
+            if let teamGames = snapshot.value as? [String:[String:Any]] {
+                
+                let releaseDateFormatter = DateFormatter()
+                releaseDateFormatter.dateFormat = "dd-MM-yyyy"
+                
+                for games in teamGames {
+                    let date = games.key
+                    let hour = games.value["hour"] as! String
+                    let location = games.value["location"] as! String
+                    
+                    let gameDate = releaseDateFormatter.date(from: date)
+                    
+                    if gameDate!.compare(Date()) == .orderedAscending {
+                        let game = Game(date:date, hour: hour, place: location, isComing: false)
+                        self.games.append(game)
+                    }
+                }
+                
+                self.games.sort(by: { (game1, game2) -> Bool in
+                    
+                    
+                    let date1 = releaseDateFormatter.date(from: game1.date)
+                    let date2 = releaseDateFormatter.date(from: game2.date)
+                    return date1?.compare(date2!) == .orderedAscending
+                    
+                })
+                self.tableView.reloadData()
+            }
+        }
+    }
 }

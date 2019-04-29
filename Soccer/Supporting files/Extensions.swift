@@ -129,3 +129,10 @@ extension UIViewController {
     }
 }
 
+extension Date {
+    func toString(dateFormat format: String ) -> String {
+        let dateFormater = DateFormatter()
+        dateFormater.dateFormat = format
+        return dateFormater.string(from: self)
+    }
+}

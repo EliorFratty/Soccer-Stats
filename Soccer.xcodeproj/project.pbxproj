@@ -10,7 +10,6 @@
 		1761EA502D5625B52CD1D989 /* Pods_Soccer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFA67EA3F3AC896ADA4EAE66 /* Pods_Soccer.framework */; };
 		CE0E2091226CE86400611274 /* PlayerJoinedToGameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0E2090226CE86400611274 /* PlayerJoinedToGameCell.swift */; };
 		CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CE783224774CE007971A9 /* WeatherJSON.swift */; };
-		CE1CE78622477CC2007971A9 /* weatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CE78522477CC2007971A9 /* weatherViewController.swift */; };
 		CE28E7CC225932F200923AF0 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE28E7CB225932F200923AF0 /* UserCell.swift */; };
 		CE75DD282242D3CF0039D551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD272242D3CF0039D551 /* AppDelegate.swift */; };
 		CE75DD2F2242D3D00039D551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE75DD2E2242D3D00039D551 /* Assets.xcassets */; };
@@ -42,7 +41,6 @@
 		78F1BBED816A086CDA1D5AF1 /* Pods-Soccer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Soccer.debug.xcconfig"; path = "Target Support Files/Pods-Soccer/Pods-Soccer.debug.xcconfig"; sourceTree = "<group>"; };
 		CE0E2090226CE86400611274 /* PlayerJoinedToGameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerJoinedToGameCell.swift; sourceTree = "<group>"; };
 		CE1CE783224774CE007971A9 /* WeatherJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherJSON.swift; sourceTree = "<group>"; };
-		CE1CE78522477CC2007971A9 /* weatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weatherViewController.swift; sourceTree = "<group>"; };
 		CE28E7CB225932F200923AF0 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		CE75DD242242D3CF0039D551 /* Soccer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Soccer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE75DD272242D3CF0039D551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -181,7 +179,6 @@
 				CE75DD512242D56A0039D551 /* TeamViewController.swift */,
 				CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */,
 				CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */,
-				CE1CE78522477CC2007971A9 /* weatherViewController.swift */,
 				CEF3D4B72259D7AF00E30E7E /* Side bar */,
 			);
 			path = Control;
@@ -348,7 +345,6 @@
 				CEA218DA2265ACBE001BC7C9 /* Game.swift in Sources */,
 				CEB2DAA6225778B9007B4286 /* Extensions.swift in Sources */,
 				CE75DD482242D5440039D551 /* Team.swift in Sources */,
-				CE1CE78622477CC2007971A9 /* weatherViewController.swift in Sources */,
 				CEF4205C225B280D00D1E784 /* Protocols.swift in Sources */,
 				CE0E2091226CE86400611274 /* PlayerJoinedToGameCell.swift in Sources */,
 				CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */,

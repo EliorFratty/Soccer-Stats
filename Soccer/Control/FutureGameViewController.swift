@@ -8,8 +8,10 @@
 
 import UIKit
 import Firebase
+import CoreLocation
 
-class FutureGameViewController: UIViewController {
+
+class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     
     // MARK:- Propreties
     
@@ -124,10 +126,42 @@ class FutureGameViewController: UIViewController {
     // MARK:- Handlers
     
     func setUpweatherContainerViewConstraint() {
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
+        
         weatherContainerView.leftAnchor.constraint(equalTo: tableView.rightAnchor).isActive = true
         weatherContainerView.topAnchor.constraint(equalTo: gameDetailesContainerView.bottomAnchor).isActive = true
         weatherContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/2).isActive = true
         weatherContainerView.bottomAnchor.constraint(equalTo: dismissButton.topAnchor).isActive = true
+
+        weatherContainerView.addSubview(weatherCityLabel)
+        weatherContainerView.addSubview(weatherTemperatureLabel)
+        weatherContainerView.addSubview(weatherSummeryLabel)
+        weatherContainerView.addSubview(weatherImage)
+        
+        weatherCityLabel.leftAnchor.constraint(equalTo: weatherContainerView.leftAnchor).isActive = true
+        weatherCityLabel.topAnchor.constraint(equalTo: weatherContainerView.topAnchor).isActive = true
+        weatherCityLabel.widthAnchor.constraint(equalTo: weatherContainerView.widthAnchor, constant: -24).isActive = true
+        weatherCityLabel.heightAnchor.constraint(equalTo: weatherContainerView.heightAnchor, multiplier: 1/4).isActive = true
+        
+        weatherTemperatureLabel.leftAnchor.constraint(equalTo: weatherContainerView.leftAnchor).isActive = true
+        weatherTemperatureLabel.topAnchor.constraint(equalTo: weatherCityLabel.bottomAnchor).isActive = true
+        weatherTemperatureLabel.widthAnchor.constraint(equalTo: weatherContainerView.widthAnchor, constant: -24).isActive = true
+        weatherTemperatureLabel.heightAnchor.constraint(equalTo: weatherContainerView.heightAnchor, multiplier: 1/4).isActive = true
+        
+        weatherSummeryLabel.leftAnchor.constraint(equalTo: weatherContainerView.leftAnchor).isActive = true
+        weatherSummeryLabel.topAnchor.constraint(equalTo: weatherTemperatureLabel.bottomAnchor).isActive = true
+        weatherSummeryLabel.widthAnchor.constraint(equalTo: weatherContainerView.widthAnchor, constant: -24).isActive = true
+        weatherSummeryLabel.heightAnchor.constraint(equalTo: weatherContainerView.heightAnchor, multiplier: 1/4).isActive = true
+        
+        weatherImage.leftAnchor.constraint(equalTo: weatherContainerView.leftAnchor).isActive = true
+        weatherImage.topAnchor.constraint(equalTo: weatherSummeryLabel.bottomAnchor).isActive = true
+        weatherImage.widthAnchor.constraint(equalTo: weatherContainerView.widthAnchor, constant: -24).isActive = true
+        weatherImage.heightAnchor.constraint(equalTo: weatherContainerView.heightAnchor, multiplier: 1/4).isActive = true
     }
     
     func setUpTableViewConstraint() {
@@ -149,8 +183,7 @@ class FutureGameViewController: UIViewController {
         gameTimerLabel.topAnchor.constraint(equalTo: gameDetailesContainerView.topAnchor).isActive = true
         gameTimerLabel.widthAnchor.constraint(equalTo: gameDetailesContainerView.widthAnchor).isActive = true
         gameTimerLabel.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        
-        
+ 
     }
     
     func setupDismissConstraint() {
@@ -164,15 +197,9 @@ class FutureGameViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    var releaseDate: NSDate?
     var countdownTimer = Timer()
     
     func startTimer() {
-        
-        let releaseDateString = "04-23-2019 20:44"
-        let releaseDateFormatter = DateFormatter()
-        releaseDateFormatter.dateFormat = "MM-dd-yyyy HH:mm"
-        releaseDate = releaseDateFormatter.date(from: releaseDateString)! as NSDate
         
         countdownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
     }
@@ -182,7 +209,13 @@ class FutureGameViewController: UIViewController {
         let currentDate = Date()
         let calendar = Calendar.current
         
-        let diffDateComponents = calendar.dateComponents([.day, .hour, .minute, .second], from: currentDate, to: releaseDate! as Date)
+        let releaseDateString = game!.date + " " + game!.hour
+
+        let releaseDateFormatter = DateFormatter()
+        releaseDateFormatter.dateFormat = "dd-MM-yyyy HH:mm"
+        let date = releaseDateFormatter.date(from: releaseDateString)
+        
+        let diffDateComponents = calendar.dateComponents([.day, .hour, .minute, .second], from: currentDate, to: date!)
         
         var countdown = "\(diffDateComponents.day ?? 0)D : \(diffDateComponents.hour ?? 0)H : \(diffDateComponents.minute ?? 0)M : \(diffDateComponents.second ?? 0)S"
         
@@ -194,6 +227,104 @@ class FutureGameViewController: UIViewController {
         
         gameTimerLabel.text! = "Game will start in: \n\(countdown)"
         
+    }
+    
+    // MARK:- Weather props
+    
+    let locationManager = CLLocationManager()
+    let geoCoder = CLGeocoder()
+    
+    
+    let weatherInputContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 5
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
+    let weatherSummeryLabel: UILabel = {
+        let lb = UILabel()
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        lb.textAlignment = .center
+        lb.numberOfLines = 0
+        
+        return lb
+    }()
+    
+    let weatherCityLabel: UILabel = {
+        let lb = UILabel()
+        lb.textAlignment = .center
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        
+        return lb
+    }()
+    
+    let weatherTemperatureLabel: UILabel = {
+        let lb = UILabel()
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        lb.textAlignment = .center
+        
+        return lb
+    }()
+    
+    let weatherImage: UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.contentMode = .scaleAspectFit
+        
+        return iv
+    }()
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        let location = locations[locations.count - 1]
+        if location.horizontalAccuracy > 0 {
+            
+            locationManager.stopUpdatingLocation()
+            
+            geoCoder.reverseGeocodeLocation(location) { (placemarks, _) in
+                if let placemarks = placemarks {
+                    if let city = placemarks[placemarks.count-1].locality {
+                        self.weatherCityLabel.text = city
+                    }
+                }
+            }
+            
+            WeatherJSON.forecast(withLocation: location.coordinate) { (results:[WeatherJSON]?) in
+                
+                DispatchQueue.main.async {
+                    if let weatherData = results {
+                        
+                        let weatherGameDate = self.searchGameDateInJsonWeather(results: weatherData)
+
+                        if let weatherInfo = weatherGameDate{
+                            self.weatherSummeryLabel.text = weatherInfo.summary
+                            self.weatherTemperatureLabel.text = "\(Int((weatherInfo.minTemperature - 32) * 5/9)) - \(Int((weatherInfo.maxTemperature - 32) * 5/9)) C"
+                            self.weatherImage.image = UIImage(named: weatherInfo.icon)
+                        } else {
+                             self.weatherSummeryLabel.text = "No information on this date... try again in few days"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func searchGameDateInJsonWeather(results weatherData:[WeatherJSON]) -> WeatherJSON?{
+
+        for weather in weatherData {
+            let myDate = Date(timeIntervalSince1970: weather.time).toString(dateFormat: "dd-MM-yyyy")
+            if myDate == self.game!.date {
+                return weather
+            }
+        }
+        return nil
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        weatherCityLabel.text = "Location Unavailable"
     }
 }
 
@@ -207,6 +338,8 @@ extension FutureGameViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = players[indexPath.row]
         return cell
     }
+    
+    
     
     
 }

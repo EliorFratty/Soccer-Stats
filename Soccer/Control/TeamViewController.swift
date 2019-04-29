@@ -175,6 +175,7 @@ class TeamViewController: UIViewController {
         
         setupinputContainerViewConstraint()
         setUpaddNewGameInputContainerView()
+        
     }
     
     //MARK:- Services
@@ -183,17 +184,34 @@ class TeamViewController: UIViewController {
         guard let userTeam = userTeam else {return}
         guard let userTeamName = userTeam.name else {return}
 
-        DBService.shared.games.child(userTeamName).observeSingleEvent(of: .value) { (snapshot) in
+        DBService.shared.games.child(userTeamName).observeSingleEvent(of: .value) { [self] (snapshot) in
             if let teamGames = snapshot.value as? [String:[String:Any]] {
+                
+                let releaseDateFormatter = DateFormatter()
+                releaseDateFormatter.dateFormat = "dd-MM-yyyy"
+                
                 for games in teamGames {
                     let date = games.key
                     let hour = games.value["hour"] as! String
                     let location = games.value["location"] as! String
                     let isComing = self.checkIfPlayerIsComingToGame(playersInGame: games.value["players"] as? [String:Any])
-                    let game = Game(date:date, hour: hour, place: location, isComing: isComing)
-                    self.games.append(game)
-
+                    
+                    let gameDate = releaseDateFormatter.date(from: date)
+                    
+                    if gameDate!.compare(Date()) == .orderedDescending {
+                        let game = Game(date:date, hour: hour, place: location, isComing: isComing)
+                        self.games.append(game)
+                    }
                 }
+
+                self.games.sort(by: { (game1, game2) -> Bool in
+                    
+                    
+                    let date1 = releaseDateFormatter.date(from: game1.date)
+                    let date2 = releaseDateFormatter.date(from: game2.date)
+                    return date1?.compare(date2!) == .orderedAscending
+                    
+                })
                 self.tableView.reloadData()
             }
         }
@@ -394,7 +412,7 @@ class TeamViewController: UIViewController {
     
     func makeNavBar() {
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Weather", style: .plain, target: self, action: #selector(weatherTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "?????", style: .plain, target: self, action: #selector(funcToDoSomthing))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToChooseTeam))
         self.navigationItem.title = TeamViewController.team.name! + " Team"
     }
@@ -404,23 +422,25 @@ class TeamViewController: UIViewController {
     }
     
     @objc func dateChanged(datePicker: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yyy HH:mm"
+         let dateFormatter = DateFormatter()
+         dateFormatter.dateFormat = "dd/MM/yyyy HH:mm"
         newGameAddDateTextField.text = dateFormatter.string(from: datePicker.date)
         view.endEditing(true)
     }
     
     
-    @objc func weatherTapped(){
-        present(weatherViewController(), animated: true, completion: nil)
+    @objc func funcToDoSomthing(){
+        popUpEror(error: "What can i do here??")
     }
 }
+    
+    
 
 // MARK - TableView Functions
 
 
 extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return games.count
     }
@@ -430,7 +450,7 @@ extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UIText
         
         cell.Game = games[indexPath.row]
         cell.delegate = self
-
+        
         return cell
     }
     
@@ -460,9 +480,8 @@ extension TeamViewController: gameCellDelegate {
             let param = ["name": player.fullName]
             DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).setValue(param)
         } else {
-             DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).removeValue()
+            DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).removeValue()
         }
     }
-    
-    
 }
+
