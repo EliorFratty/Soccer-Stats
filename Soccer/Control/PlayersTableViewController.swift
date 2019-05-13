@@ -42,7 +42,6 @@ class PlayersTableViewController: UIViewController{
     
     // MARK: - Lifecycle
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -65,7 +64,6 @@ class PlayersTableViewController: UIViewController{
     // MARK: - Hendlers
 
     func configurateSearchBar() {
-        //x,y,width,height
         
         searchBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -80,6 +78,20 @@ class PlayersTableViewController: UIViewController{
         tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
+    func makeNavBar() {
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tapAddButton))
+        self.navigationItem.rightBarButtonItem = addButton
+    }
+    
+    private let cp = CNContactPickerViewController()
+    
+    @objc func tapAddButton(){
+        cp.delegate = self
+        self.present(cp, animated: true, completion: nil)
+        
     }
     
     // MARK: - Services
@@ -97,7 +109,6 @@ class PlayersTableViewController: UIViewController{
             for user in snapDict {
                 self.importPlayers(user: user.key)
             }
-        
         }
     }
     
@@ -126,24 +137,6 @@ class PlayersTableViewController: UIViewController{
                 self.tableView.reloadData()
             }
         }
-    }
-
-    // MARK: - Add player to DB and TableView
-    
-    private let cp = CNContactPickerViewController()
-    
-    @objc func tapAddButton(){
-        cp.delegate = self
-        self.present(cp, animated: true, completion: nil)
-
-    }
-    
-
-
-    func makeNavBar() {
-        
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tapAddButton))
-        self.navigationItem.rightBarButtonItem = addButton
     }
 }
 
@@ -174,7 +167,7 @@ extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate
             playerToShow = players[indexPath.row]
         }
         
-        cell.Player = playerToShow
+        cell.player = playerToShow
 
         return cell
     }
@@ -187,41 +180,43 @@ extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate
         return true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
-        let playerToDelete: String
-        
-        if searching {
-            
-            playerToDelete = searchedPlayers[indexPath.row].fullName
-            deletePlayerFromTeams(playerToDelete: searchedPlayers[indexPath.row].fullName)
-            
-        } else  {
-            
-            playerToDelete = players[indexPath.row].fullName
-        }
-        
-        self.searchedPlayers.remove(at: indexPath.row)
-        self.tableView.deleteRows(at: [indexPath], with: .automatic )
-        
-        DBService.shared.allTeams.child(TeamViewController.team.name!).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
-        tableView.reloadData()
-    }
-    
-    func deletePlayerFromTeams(playerToDelete: String) {
-        var indexPlayerToDelete = 0
-        
-        for player in players {
-            let name = player.fullName
-            if name == playerToDelete {
-                break
-            }
-            indexPlayerToDelete += 1
-        }
-        
-        players.remove(at: indexPlayerToDelete)
-    }
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//
+//        let playerToDelete: String
+//
+//        if searching {
+//
+//            playerToDelete = searchedPlayers[indexPath.row].fullName
+//            deletePlayerFromTeams(playerToDelete: searchedPlayers[indexPath.row].fullName)
+//
+//        } else  {
+//
+//            playerToDelete = players[indexPath.row].fullName
+//        }
+//
+//        self.searchedPlayers.remove(at: indexPath.row)
+//        self.tableView.deleteRows(at: [indexPath], with: .automatic )
+//
+//        DBService.shared.allTeams.child(TeamViewController.team.name!).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
+//        tableView.reloadData()
+//    }
+//
+//    func deletePlayerFromTeams(playerToDelete: String) {
+//        var indexPlayerToDelete = 0
+//
+//        for player in players {
+//            let name = player.fullName
+//            if name == playerToDelete {
+//                break
+//            }
+//            indexPlayerToDelete += 1
+//        }
+//
+//        players.remove(at: indexPlayerToDelete)
+//    }
 }
+
+// MARK: - SearchBar
 
 extension PlayersTableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -237,8 +232,6 @@ extension PlayersTableViewController: UISearchBarDelegate {
         tableView.reloadData()
     }
 }
-
-
 
 // MARK: - add player from Contact with whatsapp
 

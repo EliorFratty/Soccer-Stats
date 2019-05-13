@@ -325,10 +325,8 @@ class TeamViewController: UIViewController {
     }
     
     @objc func addNewGameTapped() {
-      
         self.NewGameInputContainerViewHeightAnchor.constant = 150
-        
-        UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
@@ -353,7 +351,6 @@ class TeamViewController: UIViewController {
             alert.addAction(cancelAction)
             present(alert,animated: true, completion: nil)
         }
-        
     }
     
     func createNewGame(dateHour:String, location: String){
@@ -408,7 +405,7 @@ class TeamViewController: UIViewController {
         isOpen = !isOpen
     }
 
-    // MARK - navBar
+    // MARK: - navBar
     
     func makeNavBar() {
         
@@ -436,7 +433,7 @@ class TeamViewController: UIViewController {
     
     
 
-// MARK - TableView Functions
+// MARK: - TableView Functions
 
 
 extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {

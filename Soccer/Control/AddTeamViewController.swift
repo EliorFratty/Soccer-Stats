@@ -142,9 +142,9 @@ class AddTeamViewController: UIViewController {
         return teams.filter{ $0.name == teamName }.count == 0
 
     }
- 
-    // MARK: - extensions
 }
+
+// MARK: - extensions
 
 extension UIViewController {
     func hideKeyboard() {
@@ -157,9 +157,9 @@ extension UIViewController {
     }
 }
 
+// MARK: - Configuration
+
 extension AddTeamViewController {
-    
-    // MARK: - Configuration
     
     func configorateErrorLabelView(){
         
@@ -179,9 +179,7 @@ extension AddTeamViewController {
         inputContainerView.addSubview(teamNewNameTextFiled)
         inputContainerView.addSubview(teamDescriptonTextFiled)
         inputContainerView.addSubview(teamImojiTextFiled)
-        
-        
-        
+
         teamNewNameTextFiled.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor, constant: 8).isActive = true
         teamNewNameTextFiled.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
         teamNewNameTextFiled.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor, constant: -24).isActive = true
