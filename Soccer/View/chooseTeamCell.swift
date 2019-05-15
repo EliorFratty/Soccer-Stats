@@ -7,20 +7,19 @@
 //
 
 import UIKit
-
-import UIKit
+import LBTATools
 
 class ChooseTeamCell: UITableViewCell {
+    
     var team: Team? {
         didSet{
             textLabel?.text = team?.name
-            detailTextLabel?.text = team?.date
+            detailTextLabel?.text = team?.teamSummary
             imojiLabel.text = team?.teamImoji
             
         }
     }
-    
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -51,10 +50,13 @@ class ChooseTeamCell: UITableViewCell {
     }
     
     func imojiLabelAnchor() {
+                
         imojiLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8) .isActive = true
         imojiLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         imojiLabel.widthAnchor.constraint(equalToConstant: 48).isActive = true
         imojiLabel.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        
+        
     }
     
 }

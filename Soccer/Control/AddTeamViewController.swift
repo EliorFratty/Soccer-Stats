@@ -83,11 +83,9 @@ class AddTeamViewController: UIViewController {
         super.viewDidLoad()
         self.hideKeyboard()
         view.backgroundColor = .red
-        makeNavBar()
+        makeNavigationBar()
         
-        view.addSubview(inputContainerView)
-        view.addSubview(addNewTeamButton)
-        view.addSubview(erorLabel)
+        view.addSubviews(inputContainerView,addNewTeamButton,erorLabel)
 
         configorateinputContainerView()
         configorateErrorLabelView()
@@ -97,7 +95,6 @@ class AddTeamViewController: UIViewController {
         super.viewWillDisappear(animated)
         erorLabel.isHidden = true
     }
-    
 
     @objc func addNewTeamTapped(_ sender: UIButton) {
         
@@ -109,8 +106,7 @@ class AddTeamViewController: UIViewController {
             teamName != "",
             checkTeamName(teamName) {
             guard let userID = Auth.auth().currentUser?.uid else {return}
-            
-            
+
             // add team's details
             let dateString = String(describing: Date())
             let teamParam = [
@@ -123,8 +119,7 @@ class AddTeamViewController: UIViewController {
             DBService.shared.allTeams.child(teamName).setValue(teamParam)
             DBService.shared.playersInTeam.child(teamName).updateChildValues([uid: "player id"])
             DBService.shared.teamOfUser.child(userID).updateChildValues([teamName: "Team name"])
-
-            
+ 
             dismiss(animated: true, completion: nil)
 
         } else {
@@ -141,19 +136,6 @@ class AddTeamViewController: UIViewController {
 
         return teams.filter{ $0.name == teamName }.count == 0
 
-    }
-}
-
-// MARK: - extensions
-
-extension UIViewController {
-    func hideKeyboard() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(DismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func DismissKeyboard(){
-        view.endEditing(true)
     }
 }
 
@@ -176,9 +158,7 @@ extension AddTeamViewController {
         inputContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -24).isActive = true
         inputContainerView.heightAnchor.constraint(equalToConstant: 150).isActive = true
         
-        inputContainerView.addSubview(teamNewNameTextFiled)
-        inputContainerView.addSubview(teamDescriptonTextFiled)
-        inputContainerView.addSubview(teamImojiTextFiled)
+        inputContainerView.addSubviews(teamNewNameTextFiled, teamDescriptonTextFiled, teamImojiTextFiled)
 
         teamNewNameTextFiled.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor, constant: 8).isActive = true
         teamNewNameTextFiled.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
@@ -202,7 +182,7 @@ extension AddTeamViewController {
         
     }
     
-    func makeNavBar() {
+    func makeNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addNewTeamTapped))
         navigationItem.title = "Add new Team"
@@ -212,4 +192,15 @@ extension AddTeamViewController {
         dismiss(animated: true, completion: nil)
     }
     
+}
+
+extension UIViewController {
+    func hideKeyboard() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(DismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func DismissKeyboard(){
+        view.endEditing(true)
+    }
 }

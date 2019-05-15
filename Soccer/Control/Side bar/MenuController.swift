@@ -28,8 +28,7 @@ class MenuController: UIViewController {
         button.layer.cornerRadius = 25
         button.layer.masksToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        
-        
+
         button.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
         return button
     }()
@@ -61,18 +60,15 @@ class MenuController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .gray
+        view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         
-        view.addSubview(profileImageView)
-        view.addSubview(userNameFullNameLabel)
-        view.addSubview(logoutButton)
+        view.addSubviews(profileImageView, userNameFullNameLabel, logoutButton)
 
         profileImageAnchor()
         userNameFullNameLabelAnchor()
         logoutButtonAnchor()
     }
-    
-    
+
     //MARK: - Handlers
     
     func profileImageAnchor() {

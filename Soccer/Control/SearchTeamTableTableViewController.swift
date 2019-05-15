@@ -149,7 +149,7 @@ extension SearchTeamTableTableViewController: UITableViewDataSource, UITableView
         } else {
             teamClicked = allTeams[indexPath.row]
         }
-        
+
         if let uid = uid, let newTeam = teamClicked.name{
             
             DBService.shared.playersInTeam.child(newTeam).updateChildValues([uid: "player id"])

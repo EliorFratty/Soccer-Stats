@@ -136,3 +136,9 @@ extension Date {
         return dateFormater.string(from: self)
     }
 }
+
+extension UIView {
+    func addSubviews(_ views: UIView...) {
+        views.forEach{ addSubview($0)}
+    }
+}

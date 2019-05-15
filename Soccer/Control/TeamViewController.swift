@@ -25,7 +25,7 @@ class TeamViewController: UIViewController {
 
     let addNewGameInputContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .red
+        view.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
@@ -51,16 +51,15 @@ class TeamViewController: UIViewController {
         return tf
     }()
     
-    lazy var newGameAddButton : UIButton = {
+    lazy var newGameCreateButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = .black
+        button.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
         button.setTitle("Create", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
+
         
         button.addTarget(self, action: #selector(newGameAddButtonTapped), for: .touchUpInside)
         return button
@@ -68,14 +67,13 @@ class TeamViewController: UIViewController {
     
     lazy var newGameCancelButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = .black
+        button.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
+
         
         button.addTarget(self, action: #selector(newGameCancelButtonTapped), for: .touchUpInside)
         return button
@@ -84,14 +82,13 @@ class TeamViewController: UIViewController {
     lazy var tableView: UITableView = {
         let tb = UITableView()
         tb.translatesAutoresizingMaskIntoConstraints = false
-        tb.backgroundColor = .black
         tb.register(GameCell.self, forCellReuseIdentifier: cellId)
         return tb
     }()
 
     let inputContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
@@ -100,7 +97,6 @@ class TeamViewController: UIViewController {
     
     lazy var playersButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = .black
         button.setTitle("Players", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -115,7 +111,7 @@ class TeamViewController: UIViewController {
     
     lazy var futureGameButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = .black
+        button.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
         button.setTitle("Next matches", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -130,7 +126,6 @@ class TeamViewController: UIViewController {
     
     lazy var previousGameButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = .black
         button.setTitle("Previous games", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -143,24 +138,11 @@ class TeamViewController: UIViewController {
         return button
     }()
 
-    
-    lazy var addNewGameButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("New Game", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        button.addTarget(self, action: #selector(addNewGameTapped), for: .touchUpInside)
-        return button
-    }()
-
     // MARK:- Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .yellow
+        view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         getAllGamesFromDB()
        
         tableView.delegate = self
@@ -169,9 +151,7 @@ class TeamViewController: UIViewController {
         makeDatePicker()
         makeNavBar()
         
-        view.addSubview(inputContainerView)
-        view.addSubview(addNewGameButton)
-        view.addSubview(addNewGameInputContainerView)
+        view.addSubviews(inputContainerView,addNewGameInputContainerView)
         
         setupinputContainerViewConstraint()
         setUpaddNewGameInputContainerView()
@@ -240,10 +220,7 @@ class TeamViewController: UIViewController {
         inputContainerViewHeightAnchor = inputContainerView.heightAnchor.constraint(equalToConstant: 150)
         inputContainerViewHeightAnchor.isActive = true
         
-        inputContainerView.addSubview(playersButton)
-        inputContainerView.addSubview(previousGameButton)
-        inputContainerView.addSubview(futureGameButton)
-        inputContainerView.addSubview(tableView)
+        inputContainerView.addSubviews(playersButton,previousGameButton,futureGameButton,tableView)
 
         playersButton.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
         playersButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -267,48 +244,39 @@ class TeamViewController: UIViewController {
         tableViewHeightAnchor = tableView.heightAnchor.constraint(equalToConstant: 0)
         tableViewHeightAnchor.isActive = true
 
-        addNewGameButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        addNewGameButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        addNewGameButton.widthAnchor.constraint(equalToConstant: 100) .isActive = true
-        addNewGameButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
     }
     
     var NewGameInputContainerViewHeightAnchor = NSLayoutConstraint()
     
     func setUpaddNewGameInputContainerView() {
-        addNewGameInputContainerView.topAnchor.constraint(equalTo: addNewGameButton.topAnchor, constant: 20).isActive = true
-        addNewGameInputContainerView.leftAnchor.constraint(equalTo: addNewGameButton.leftAnchor, constant: 10).isActive = true
-        addNewGameInputContainerView.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor) .isActive = true
+        addNewGameInputContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        addNewGameInputContainerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        addNewGameInputContainerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         NewGameInputContainerViewHeightAnchor = addNewGameInputContainerView.heightAnchor.constraint(equalToConstant: 0)
         NewGameInputContainerViewHeightAnchor.isActive = true
         
-        addNewGameInputContainerView.addSubview(newGameAddDateTextField)
-        addNewGameInputContainerView.addSubview(newGameAddLocationTextField)
-        addNewGameInputContainerView.addSubview(newGameAddButton)
-        addNewGameInputContainerView.addSubview(newGameCancelButton)
+        addNewGameInputContainerView.addSubviews(newGameAddDateTextField,newGameAddLocationTextField,newGameCreateButton,newGameCancelButton)
         
-
         newGameAddDateTextField.delegate = self
         newGameAddLocationTextField.delegate = self
         
         newGameAddDateTextField.topAnchor.constraint(equalTo: addNewGameInputContainerView.topAnchor).isActive = true
-        newGameAddDateTextField.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor).isActive = true
-        newGameAddDateTextField.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor).isActive = true
+        newGameAddDateTextField.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor,constant: 10).isActive = true
+        newGameAddDateTextField.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor,constant: -15).isActive = true
         newGameAddDateTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         newGameAddLocationTextField.topAnchor.constraint(equalTo: newGameAddDateTextField.bottomAnchor).isActive = true
-        newGameAddLocationTextField.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor).isActive = true
-        newGameAddLocationTextField.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor).isActive = true
+        newGameAddLocationTextField.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor,constant: 10).isActive = true
+        newGameAddLocationTextField.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor,constant: -15).isActive = true
         newGameAddLocationTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        newGameAddButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
-        newGameAddButton.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor).isActive = true
-        newGameAddButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
-        newGameAddButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        newGameCreateButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
+        newGameCreateButton.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor).isActive = true
+        newGameCreateButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
+        newGameCreateButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         newGameCancelButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
-        newGameCancelButton.leftAnchor.constraint(equalTo: newGameAddButton.rightAnchor).isActive = true
+        newGameCancelButton.leftAnchor.constraint(equalTo: newGameCreateButton.rightAnchor).isActive = true
         newGameCancelButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
         newGameCancelButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
@@ -333,6 +301,9 @@ class TeamViewController: UIViewController {
     
     @objc func newGameCancelButtonTapped() {
         NewGameInputContainerViewHeightAnchor.constant = 0
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
 
     @objc func newGameAddButtonTapped() {
@@ -341,6 +312,7 @@ class TeamViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
+        
         if newGameAddDateTextField.text! != "" {
             let alert = UIAlertController(title: "You created new game", message: "at: \(newGameAddDateTextField.text!) \n\(newGameAddLocationTextField.text!)", preferredStyle: .alert)
             let action = UIAlertAction(title: "Ok", style: .default) { (action) in
@@ -409,7 +381,7 @@ class TeamViewController: UIViewController {
     
     func makeNavBar() {
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "?????", style: .plain, target: self, action: #selector(funcToDoSomthing))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New Match", style: .plain, target: self, action: #selector(addNewGameTapped))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToChooseTeam))
         self.navigationItem.title = TeamViewController.team.name! + " Team"
     }

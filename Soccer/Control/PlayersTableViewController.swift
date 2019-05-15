@@ -116,7 +116,6 @@ class PlayersTableViewController: UIViewController{
         
         DBService.shared.users.child(user).observeSingleEvent(of: .value) { (snapshot) in
             guard let snapDict = snapshot.value as? [String : Any] else {return}
-            print(snapDict)
             if let fullName = snapDict["fullName"] as? String,
                 let email = snapDict["email"] as? String,
                 let profileImageUrl = snapDict["profileImageUrl"] as? String {
