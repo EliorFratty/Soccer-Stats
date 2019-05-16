@@ -20,6 +20,9 @@ class SearchTeamTableTableViewController: UIViewController{
     let searchBar: UISearchBar = {
         let sb = UISearchBar()
             sb.translatesAutoresizingMaskIntoConstraints = false
+
+        sb.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+
         
         return sb
     }()
@@ -27,9 +30,7 @@ class SearchTeamTableTableViewController: UIViewController{
     lazy var tableView: UITableView = {
        let tb = UITableView()
         tb.register(ChooseTeamCell.self, forCellReuseIdentifier: cellID)
-        tb.backgroundColor = .darkGray
         tb.keyboardDismissMode = .onDrag
-        tb.separatorStyle = .none
         
         tb.translatesAutoresizingMaskIntoConstraints = false
         return tb
@@ -53,8 +54,19 @@ class SearchTeamTableTableViewController: UIViewController{
     }
     
     func makeNavBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addTeamToDB))
+        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+        navigationController?.navigationBar.barStyle = .blackTranslucent
+        self.title = "Search Team"
+        
+        let cancelButton =  UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped))
+        cancelButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        navigationItem.leftBarButtonItem = cancelButton
+        
+        let addNewTeamButton = UIBarButtonItem(title: "New Team", style: .plain, target: self, action: #selector(addTeamToDB))
+        addNewTeamButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        navigationItem.rightBarButtonItem = addNewTeamButton
+
+        
 
     }
     

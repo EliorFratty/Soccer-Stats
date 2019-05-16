@@ -95,13 +95,15 @@ class HomeController: UIViewController {
     }
     
     func configurateNavigationBar() {
-        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
         navigationController?.navigationBar.barStyle = .blackTranslucent
         
         let profileButton = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(handleMenuToggle))
+        profileButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         navigationItem.leftBarButtonItem = profileButton
         
         let searchTeamButton = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchTeamFromAllUsers))
+        searchTeamButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         navigationItem.rightBarButtonItem = searchTeamButton
         
     }
@@ -112,6 +114,7 @@ class HomeController: UIViewController {
         
         let searchTeamTableTableViewController = SearchTeamTableTableViewController()
         let navController = UINavigationController(rootViewController: searchTeamTableTableViewController)
+        navController.navigationBar.tintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
         
         present(navController, animated: true, completion: nil)
         

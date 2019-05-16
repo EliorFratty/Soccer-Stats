@@ -18,8 +18,6 @@ class PreviousGameViewController: UIViewController {
     
     lazy var tableView: UITableView = {
         let tb = UITableView()
-        tb.translatesAutoresizingMaskIntoConstraints = false
-        tb.backgroundColor = .black
         tb.register(PlayerJoinedToGameCell.self, forCellReuseIdentifier: cellID)
         return tb
     }()
@@ -32,7 +30,7 @@ class PreviousGameViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.setTitle("Return", for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         
         button.layer.cornerRadius = 25
         button.layer.masksToBounds = true
@@ -47,18 +45,28 @@ class PreviousGameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
-        view.addSubview(dismissButton)
-        setupDismissConstraint()
-
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        view.addSubviews(dismissButton,tableView)
+        setupDismissButtonConstraint()
+        setupTableViewConstraint()
+        getAllGamesFromDB()
 
     }
-    // MARK:- Handlers
+    // MARK:- Constraints
+    
+    func setupTableViewConstraint() {
+        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: dismissButton.topAnchor, trailing: view.trailingAnchor)
+        
+    }
 
-    func setupDismissConstraint() {
+    func setupDismissButtonConstraint() {
         dismissButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        dismissButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
-        dismissButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        dismissButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40).isActive = true
+        dismissButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         dismissButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
@@ -90,8 +98,7 @@ class PreviousGameViewController: UIViewController {
                 }
                 
                 self.games.sort(by: { (game1, game2) -> Bool in
-                    
-                    
+ 
                     let date1 = releaseDateFormatter.date(from: game1.date)
                     let date2 = releaseDateFormatter.date(from: game2.date)
                     return date1?.compare(date2!) == .orderedAscending
@@ -101,4 +108,38 @@ class PreviousGameViewController: UIViewController {
             }
         }
     }
+}
+
+extension PreviousGameViewController: UITableViewDelegate, UITableViewDataSource {
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.text = "  Previous Games:"
+
+        return label
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return games.count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
+
+        cell.textLabel?.text = games[indexPath.row].date
+        cell.textLabel?.textAlignment = .center
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+    }
+ 
 }

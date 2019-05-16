@@ -15,7 +15,6 @@ class TeamViewController: UIViewController {
     
     var datePicker: UIDatePicker?
     let cellId = "gameCell"
-    var isOpen = true
     
     static var team : Team!
     let player = HomeController.userAsPlayer
@@ -59,7 +58,8 @@ class TeamViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         
         button.translatesAutoresizingMaskIntoConstraints = false
-
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
         
         button.addTarget(self, action: #selector(newGameAddButtonTapped), for: .touchUpInside)
         return button
@@ -73,7 +73,8 @@ class TeamViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         
         button.translatesAutoresizingMaskIntoConstraints = false
-
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
         
         button.addTarget(self, action: #selector(newGameCancelButtonTapped), for: .touchUpInside)
         return button
@@ -142,7 +143,7 @@ class TeamViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+        
         getAllGamesFromDB()
        
         tableView.delegate = self
@@ -150,7 +151,8 @@ class TeamViewController: UIViewController {
         
         makeDatePicker()
         makeNavBar()
-        
+        setupImageBackgorund()
+
         view.addSubviews(inputContainerView,addNewGameInputContainerView)
         
         setupinputContainerViewConstraint()
@@ -209,6 +211,15 @@ class TeamViewController: UIViewController {
     }
     
     // MARK:- Anchors
+    
+    func setupImageBackgorund() {
+        let imageView = UIImageView(image: UIImage(named: "soccerFiled"))
+        imageView.contentMode = .scaleAspectFill
+        self.view.addSubview(imageView)
+        imageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+    }
+    
+    
     var tableViewHeightAnchor = NSLayoutConstraint()
     var tableViewTopAnchor = NSLayoutConstraint()
     var inputContainerViewHeightAnchor = NSLayoutConstraint()
@@ -337,17 +348,28 @@ class TeamViewController: UIViewController {
         
         DBService.shared.games.child(userTeamName).child(date).setValue(param)
     }
+    
+    private var isOpen = false
 
     @objc func playersTapped() {
+        tableViewHeightAnchor.constant = 0
+        inputContainerViewHeightAnchor.constant = 150
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+        
+        isOpen = false
+        
         let playerTableViewController = PlayersTableViewController()
         navigationController?.pushViewController(playerTableViewController, animated: true)
+
     }
 
     @objc func previousGameTapped(){
         let previousGameViewController = PreviousGameViewController()
         present(previousGameViewController, animated: true, completion: nil)
     }
-    
+
     @objc func futureGameTapped(){
         
         if games.isEmpty {
@@ -357,23 +379,21 @@ class TeamViewController: UIViewController {
             present(alert,animated: true, completion: nil)
         }
         
-        if isOpen {
+        if !isOpen {
             self.tableViewHeightAnchor.constant = CGFloat(50 * games.count)
             self.inputContainerViewHeightAnchor.constant = CGFloat(150 + 50 * games.count)
-            
-            UIView.animate(withDuration: 0.3) {
-                self.view.layoutIfNeeded()
-            }
-            
+
         } else {
             self.tableViewHeightAnchor.constant = 0
             self.inputContainerViewHeightAnchor.constant = 150
-            
-            UIView.animate(withDuration: 0.3) {
-                self.view.layoutIfNeeded()
-                
-            }
+
         }
+        
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+            
+        }
+        
         isOpen = !isOpen
     }
 
@@ -382,7 +402,9 @@ class TeamViewController: UIViewController {
     func makeNavBar() {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New Match", style: .plain, target: self, action: #selector(addNewGameTapped))
+        navigationItem.rightBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToChooseTeam))
+        navigationItem.leftBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         self.navigationItem.title = TeamViewController.team.name! + " Team"
     }
     
@@ -396,17 +418,9 @@ class TeamViewController: UIViewController {
         newGameAddDateTextField.text = dateFormatter.string(from: datePicker.date)
         view.endEditing(true)
     }
-    
-    
-    @objc func funcToDoSomthing(){
-        popUpEror(error: "What can i do here??")
-    }
 }
-    
-    
 
 // MARK: - TableView Functions
-
 
 extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
@@ -430,6 +444,10 @@ extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UIText
         
         tableView.deselectRow(at: indexPath, animated: true)
         
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

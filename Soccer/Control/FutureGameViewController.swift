@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import CoreLocation
+import LBTATools
 
 
 class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
@@ -21,7 +22,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     
     let gameDetailesContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .brown
+        view.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
         //   view.layer.cornerRadius = 5
         // view.layer.masksToBounds = true
@@ -39,7 +40,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     lazy var tableView: UITableView = {
         let tb = UITableView()
         tb.translatesAutoresizingMaskIntoConstraints = false
-        tb.backgroundColor = .black
+        tb.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
         tb.register(PlayerJoinedToGameCell.self, forCellReuseIdentifier: cellID)
         return tb
     }()
@@ -66,7 +67,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     lazy var dismissButton : UIButton = {
         let button = UIButton()
         
-        button.backgroundColor = UIColor.red
+        button.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.lineBreakMode = .byWordWrapping
@@ -88,10 +89,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
         getPlayerComingToGame()
         startTimer()
         
-        view.addSubview(dismissButton)
-        view.addSubview(gameDetailesContainerView)
-        view.addSubview(tableView)
-        view.addSubview(weatherContainerView)
+        view.addSubviews(dismissButton, gameDetailesContainerView, tableView, weatherContainerView)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -138,11 +136,8 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
         weatherContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/2).isActive = true
         weatherContainerView.bottomAnchor.constraint(equalTo: dismissButton.topAnchor).isActive = true
 
-        weatherContainerView.addSubview(weatherCityLabel)
-        weatherContainerView.addSubview(weatherTemperatureLabel)
-        weatherContainerView.addSubview(weatherSummeryLabel)
-        weatherContainerView.addSubview(weatherImage)
-        
+        weatherContainerView.addSubviews(weatherCityLabel,weatherTemperatureLabel,weatherSummeryLabel, weatherImage)
+
         weatherCityLabel.leftAnchor.constraint(equalTo: weatherContainerView.leftAnchor).isActive = true
         weatherCityLabel.topAnchor.constraint(equalTo: weatherContainerView.topAnchor).isActive = true
         weatherCityLabel.widthAnchor.constraint(equalTo: weatherContainerView.widthAnchor, constant: -24).isActive = true
@@ -175,7 +170,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
         gameDetailesContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         gameDetailesContainerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         gameDetailesContainerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        gameDetailesContainerView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        gameDetailesContainerView.heightAnchor.constraint(equalToConstant: 120).isActive = true
         
         gameDetailesContainerView.addSubview(gameTimerLabel)
         
@@ -188,7 +183,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     
     func setupDismissConstraint() {
         dismissButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        dismissButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        dismissButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
         dismissButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         dismissButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
@@ -237,7 +232,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     
     let weatherInputContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
@@ -292,7 +287,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
                 }
             }
             
-            WeatherJSON.forecast(withLocation: location.coordinate) { (results:[WeatherJSON]?) in
+            WeatherJSON.forecast(withLocation: location.coordinate) { [self] (results:[WeatherJSON]?) in
                 
                 DispatchQueue.main.async {
                     if let weatherData = results {
@@ -328,6 +323,8 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     }
 }
 
+// MARK: - tableView
+
 extension FutureGameViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return players.count
@@ -338,8 +335,4 @@ extension FutureGameViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = players[indexPath.row]
         return cell
     }
-    
-    
-    
-    
 }
