@@ -55,9 +55,9 @@ class MenuController: UIViewController {
         return lb
     }()
 
-    
-    //MARK: - Init
-    
+
+    //MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
@@ -69,8 +69,8 @@ class MenuController: UIViewController {
         logoutButtonAnchor()
     }
 
-    //MARK: - Handlers
-    
+    //MARK: - Configurations
+
     func profileImageAnchor() {
         profileImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20) .isActive = true
         profileImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 65).isActive = true
@@ -95,6 +95,8 @@ class MenuController: UIViewController {
 
     }
     
+    //MARK: - Handlers
+
     @objc func logoutTapped(){
         let menuOption = MenuOption(rawValue: 0)
         delegate?.handleMenuToggle(forMenuOption: menuOption)

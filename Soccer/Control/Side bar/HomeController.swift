@@ -14,7 +14,7 @@ import Alamofire
 class HomeController: UIViewController {
     
     //MARK: - Properties
-    
+
     static var userAsPlayer = Player()
 
     
@@ -126,7 +126,7 @@ class HomeController: UIViewController {
         
     }
 
-    // MARK: - service
+    // MARK: - Service
     
     func checkIfUserIsLoggedIn() {
         if Auth.auth().currentUser?.uid == nil {

@@ -209,16 +209,15 @@ class TeamViewController: UIViewController {
         }
         return false
     }
-    
-    // MARK:- Anchors
-    
+
+    //MARK: - Configurations
+
     func setupImageBackgorund() {
         let imageView = UIImageView(image: UIImage(named: "soccerFiled"))
         imageView.contentMode = .scaleAspectFill
         self.view.addSubview(imageView)
         imageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
     }
-    
     
     var tableViewHeightAnchor = NSLayoutConstraint()
     var tableViewTopAnchor = NSLayoutConstraint()
@@ -397,7 +396,7 @@ class TeamViewController: UIViewController {
         isOpen = !isOpen
     }
 
-    // MARK: - navBar
+    // MARK: - NavigationBar Handler
     
     func makeNavBar() {
         

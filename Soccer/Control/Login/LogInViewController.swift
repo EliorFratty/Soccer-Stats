@@ -11,6 +11,8 @@ import Firebase
 
 class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    //MARK: - Properties
+
     let activityIndic: UIActivityIndicatorView = {
         let ai = UIActivityIndicatorView(style: .whiteLarge)
         ai.translatesAutoresizingMaskIntoConstraints = false
@@ -37,7 +39,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     let inputContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
@@ -46,7 +48,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     lazy var loginRegisterButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor.red
+        button.backgroundColor = #colorLiteral(red: 0.9993709922, green: 0.1453172863, blue: 0, alpha: 1)
         button.setTitle("Register", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.white, for: .normal)
@@ -64,7 +66,6 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         tf.placeholder = "Name"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.clearButtonMode = .whileEditing
-        tf.keyboardType = .emailAddress
 
         return tf
     }()
@@ -106,7 +107,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     lazy var profileImageView: UIImageView = {
        let imageView = UIImageView()
-        imageView.image = UIImage(named: "LoginPic")
+        imageView.image = UIImage(named: "selectImage")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
@@ -117,32 +118,6 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         return imageView
     }()
     
-    @objc func selectedProfileImage(){
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.allowsEditing = true
-        
-        present(picker, animated: true, completion: nil)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        var selectedImageFromPicker: UIImage?
-        
-        if let edditedImage = info[.editedImage] {
-            selectedImageFromPicker = edditedImage as? UIImage
-            
-        } else if let originalImage = info[.originalImage] {
-            selectedImageFromPicker = originalImage as? UIImage
-        }
-        
-        if let selectedImage = selectedImageFromPicker {
-            profileImageView.image = selectedImage
-        }
-        
-        dismiss(animated: true, completion: nil)
-    }
-    
     lazy var loginRegisterSegmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Login", "Register"])
         sc.translatesAutoresizingMaskIntoConstraints = false
@@ -152,15 +127,13 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         return sc
     }()
     
+    //MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(red: 0.81, green: 0.31, blue: 0.31, alpha: 1)
-        view.addSubview(inputContainerView)
-        view.addSubview(loginRegisterButton)
-        view.addSubview(profileImageView)
-        view.addSubview(loginRegisterSegmentedControl)
+        view.addSubviews(inputContainerView,loginRegisterButton,profileImageView,loginRegisterSegmentedControl)
         
         self.hideKeyboard()
         setupinputContainerViewConstraint()
@@ -169,10 +142,9 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         setUpProfileImageView()
         
     }
-    
-    //MARK: - Anchor's
-    // need x, y, width, height
-    
+
+    //MARK: - Configurations
+
     func setUploginRegisterSegmentedControl() {
         loginRegisterSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loginRegisterSegmentedControl.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -10).isActive = true
@@ -208,13 +180,8 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         inputContaunerViewHeightAnchor = inputContainerView.heightAnchor.constraint(equalToConstant: 150)
         inputContaunerViewHeightAnchor?.isActive = true
         
-        inputContainerView.addSubview(nameTextFiled)
-        inputContainerView.addSubview(emailTextFiled)
-        inputContainerView.addSubview(passwordTextFiled)
-        inputContainerView.addSubview(nameSepratorView)
-        inputContainerView.addSubview(emailSepratorView)
-        inputContainerView.addSubview(loadingContainerView)
-        
+        inputContainerView.addSubviews(nameTextFiled,emailTextFiled,passwordTextFiled,nameSepratorView,emailSepratorView,loadingContainerView)
+
         nameTextFiled.leftAnchor.constraint(equalTo: inputContainerView.leftAnchor, constant: 12).isActive = true
         nameTextFiled.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
         nameTextFiled.widthAnchor.constraint(equalTo: inputContainerView.widthAnchor, constant: -24).isActive = true
@@ -253,8 +220,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     func setuploadingContainerViewConstraint(){
         
-        loadingContainerView.addSubview(activityIndic)
-        loadingContainerView.addSubview(loadingLabel)
+        loadingContainerView.addSubviews(activityIndic, loadingLabel)
 
         activityIndic.centerXAnchor.constraint(equalTo: loadingContainerView.centerXAnchor).isActive = true
         activityIndic.topAnchor.constraint(equalTo: loadingContainerView.topAnchor, constant: 5).isActive = true
@@ -265,6 +231,34 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         loadingLabel.bottomAnchor.constraint(equalTo: loadingContainerView.bottomAnchor, constant: 5).isActive = true
         loadingLabel.widthAnchor.constraint(equalTo: loadingContainerView.widthAnchor, constant: -5).isActive = true
         loadingLabel.heightAnchor.constraint(equalToConstant: 45).isActive = true
+    }
+    
+    // MARK: - Handler
+    
+    @objc func selectedProfileImage(){
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let edditedImage = info[.editedImage] {
+            selectedImageFromPicker = edditedImage as? UIImage
+            
+        } else if let originalImage = info[.originalImage] {
+            selectedImageFromPicker = originalImage as? UIImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker {
+            profileImageView.image = selectedImage
+        }
+        
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Register & Login

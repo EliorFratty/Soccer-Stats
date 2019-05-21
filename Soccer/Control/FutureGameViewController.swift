@@ -14,8 +14,8 @@ import LBTATools
 
 class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     
-    // MARK:- Propreties
-    
+    //MARK: - Properties
+
     var game: Game? = nil
     var players = [String]()
     let cellID = "playerJoinedToGame"
@@ -101,28 +101,9 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
         
     }
     
-    // MARK:- Services
-    
-    func getPlayerComingToGame() {
-        guard let userTeam = TeamViewController.team else {return}
-        guard let userTeamName = userTeam.name else {return}
-        
-        guard let game = game else {return}
 
-        DBService.shared.games.child(userTeamName).child(game.date).child("players").observeSingleEvent(of: .value, with: { [self](snapshot) in
-          
-            if let playerComingToGame = snapshot.value as? [String:Any] {
-                for player in playerComingToGame{
-                    self.players.append(player.key)
-                }
-                self.tableView.reloadData()
-            }
-        })
-    }
-    
-    
-    // MARK:- Handlers
-    
+    //MARK: - Configurations
+
     func setUpweatherContainerViewConstraint() {
         
         locationManager.delegate = self
@@ -192,8 +173,27 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
         self.dismiss(animated: true, completion: nil)
     }
     
-    var countdownTimer = Timer()
+    // MARK:- Services
     
+    func getPlayerComingToGame() {
+        guard let userTeam = TeamViewController.team else {return}
+        guard let userTeamName = userTeam.name else {return}
+        
+        guard let game = game else {return}
+        
+        DBService.shared.games.child(userTeamName).child(game.date).child("players").observeSingleEvent(of: .value, with: { [self](snapshot) in
+            
+            if let playerComingToGame = snapshot.value as? [String:Any] {
+                for player in playerComingToGame{
+                    self.players.append(player.key)
+                }
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
+    var countdownTimer = Timer()
+
     func startTimer() {
         
         countdownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
@@ -224,8 +224,8 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
         
     }
     
-    // MARK:- Weather props
-    
+    // MARK:- Weather Properties
+
     let locationManager = CLLocationManager()
     let geoCoder = CLGeocoder()
     
@@ -323,7 +323,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     }
 }
 
-// MARK: - tableView
+// MARK: - TableView functions
 
 extension FutureGameViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

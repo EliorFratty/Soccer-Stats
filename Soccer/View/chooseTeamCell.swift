@@ -55,8 +55,7 @@ class ChooseTeamCell: UITableViewCell {
         imojiLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         imojiLabel.widthAnchor.constraint(equalToConstant: 48).isActive = true
         imojiLabel.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        
-        
+  
     }
     
 }

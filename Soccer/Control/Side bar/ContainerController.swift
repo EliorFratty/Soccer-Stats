@@ -18,16 +18,16 @@ class ContainerController: UIViewController {
 
     var isExpanded = false
 
-    //MARK: - Init
-    
+    //MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configurateHomeController()
     }
 
-    //MARK: - Handlers
-    
+    //MARK: - Configurations
+
     func configurateHomeController(){
     
         let homeController = HomeController()
@@ -53,8 +53,15 @@ class ContainerController: UIViewController {
         }
     }
     
+    //MARK: - Handlers
+   
+    func logout(){
+        try! Auth.auth().signOut()
+        let viewCntroller = LogInViewController()
+        self.present(viewCntroller, animated: true, completion: nil)
+    }
+  
     func animatePanel(sholdExpend: Bool, menuOption: MenuOption?) {
-        
         if sholdExpend {
             UIView.animate(withDuration: 0.7 ,
                            delay: 0,
@@ -91,17 +98,10 @@ class ContainerController: UIViewController {
         }
     }
     
-    func didSelectMenuOption(menuOption: MenuOption) {
-        
+    func didSelectMenuOption(menuOption: MenuOption) {        
         switch menuOption{
             case .logout: logout()
         }
-    }
-    
-    func logout(){
-        try! Auth.auth().signOut()
-        let viewCntroller = LogInViewController()
-        self.present(viewCntroller, animated: true, completion: nil)
     }
 }
 

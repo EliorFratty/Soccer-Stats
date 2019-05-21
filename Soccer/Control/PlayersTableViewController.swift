@@ -60,8 +60,8 @@ class PlayersTableViewController: UIViewController{
         tableView.allowsMultipleSelectionDuringEditing = true
   
     }
-    
-    // MARK: - Hendlers
+
+    //MARK: - Configurations
 
     func configurateSearchBar() {
         
@@ -85,6 +85,8 @@ class PlayersTableViewController: UIViewController{
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tapAddButton))
         self.navigationItem.rightBarButtonItem = addButton
     }
+
+    //MARK: - Handlers
     
     private let cp = CNContactPickerViewController()
     
@@ -139,7 +141,7 @@ class PlayersTableViewController: UIViewController{
     }
 }
 
-// MARK: - Table view data source
+// MARK: - TableView functions
 
 extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate {
     
@@ -215,7 +217,7 @@ extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate
 //    }
 }
 
-// MARK: - SearchBar
+// MARK: - SearchBar functions
 
 extension PlayersTableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -330,8 +332,7 @@ extension PlayersTableViewController: CNContactPickerDelegate {
     
     func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
 
-    }
-    
+    }    
 }
 
 

@@ -11,6 +11,8 @@ import Firebase
 
 
 class SearchTeamTableTableViewController: UIViewController{
+    
+    //MARK: - Properties
 
     var allTeams = [Team]()
     let cellID = "theSearchCell"
@@ -36,6 +38,7 @@ class SearchTeamTableTableViewController: UIViewController{
         return tb
     }()
 
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +56,25 @@ class SearchTeamTableTableViewController: UIViewController{
         configurateTableView()
     }
     
+    //MARK: - Configurations
+    
+    func configurateSearchBar() {
+        
+        searchBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        searchBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive =  true
+        searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+    }
+    
+    func configurateTableView() {
+        
+        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
     func makeNavBar() {
         navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
         navigationController?.navigationBar.barStyle = .blackTranslucent
@@ -65,11 +87,11 @@ class SearchTeamTableTableViewController: UIViewController{
         let addNewTeamButton = UIBarButtonItem(title: "New Team", style: .plain, target: self, action: #selector(addTeamToDB))
         addNewTeamButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         navigationItem.rightBarButtonItem = addNewTeamButton
-
         
-
     }
-    
+
+    //MARK: - Handlers
+
     @objc func cancelTapped(){
         dismiss(animated: true, completion: nil)
     }
@@ -78,25 +100,7 @@ class SearchTeamTableTableViewController: UIViewController{
         let addTeamViewController = AddTeamViewController()
         navigationController?.pushViewController(addTeamViewController, animated: true)
     }
-    
-    func configurateSearchBar() {
-        //x,y,width,height
 
-        searchBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        searchBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive =  true
-        searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-    }
-    
-    func configurateTableView() {
-
-        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
-        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-    }
-    
     // MARK: - Servies
     
     func reciveTeamsFromDB() {

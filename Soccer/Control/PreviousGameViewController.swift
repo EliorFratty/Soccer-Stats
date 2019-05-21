@@ -40,8 +40,8 @@ class PreviousGameViewController: UIViewController {
         button.addTarget(self, action: #selector(dismissTapped), for: .touchUpInside)
         return button
     }()
+    
     // MARK:- Lifecycle
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +56,9 @@ class PreviousGameViewController: UIViewController {
         getAllGamesFromDB()
 
     }
-    // MARK:- Constraints
-    
+
+    //MARK: - Configurations
+
     func setupTableViewConstraint() {
         tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: dismissButton.topAnchor, trailing: view.trailingAnchor)
         
@@ -73,6 +74,8 @@ class PreviousGameViewController: UIViewController {
     @objc func dismissTapped(){
         self.dismiss(animated: true, completion: nil)
     }
+
+    // MARK: - Service
     
     func getAllGamesFromDB() {
         guard let userTeam = TeamViewController.team else {return}
@@ -110,6 +113,8 @@ class PreviousGameViewController: UIViewController {
     }
 }
 
+// MARK:- TableView functions
+
 extension PreviousGameViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -141,5 +146,4 @@ extension PreviousGameViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
     }
- 
 }

@@ -206,7 +206,6 @@ class AddTeamViewController: UIViewController {
 }
     
 
-
 extension UIViewController {
     func hideKeyboard() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(DismissKeyboard))
