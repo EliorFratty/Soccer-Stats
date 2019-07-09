@@ -84,6 +84,8 @@ class PlayersTableViewController: UIViewController{
         
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tapAddButton))
         self.navigationItem.rightBarButtonItem = addButton
+        navigationItem.leftBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        navigationItem.rightBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
     }
 
     //MARK: - Handlers

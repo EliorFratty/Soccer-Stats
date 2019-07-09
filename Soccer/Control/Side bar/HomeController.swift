@@ -23,7 +23,7 @@ class HomeController: UIViewController {
     private let cellID = "myTeamCell"
     private var changedUser = false
     
-    private let soccerLiveUrl = "https://apifootball.com/api/?action=get_events%20=1&match_live%20=%201&APIkey=6898d37af29b4c86c79b6ce8ed7b1a0460287feb62cf77bab528e1334674d0fc"
+    private let soccerLiveUrl = ""
 
     private lazy var tableView: UITableView = {
         let tv = UITableView()
@@ -150,7 +150,7 @@ class HomeController: UIViewController {
                     self.liveScoreLabel.isHidden = false
                     self.navigationItem.title = "Hello \(name)"
                     self.activityIndic.stopAnimating()
-                    self.fetchJSON()
+                    //self.fetchJSON()
                 }
             }
         }
@@ -194,42 +194,42 @@ class HomeController: UIViewController {
         })
     }
     
-    func fetchJSON() {
-        getJSON { [self] (json, error) in
-            if let error = error {
-                print("Can't fetch json", error)
-                return
-            }
-            
-            if let jsonArray = json {
-                
-                if jsonArray.isEmpty {
-                    self.liveScoreLabel.text = "No live game at this moment"
-                }
-                
-                for liveGame in jsonArray {
-                    print(liveGame)
-                }
-            }
-        }
-    }
-    
-    typealias WebServicesResponse = ([[String:Any]]?, Error?) -> Void
-    
-    func getJSON(completion: @escaping WebServicesResponse) {
-        Alamofire.request(soccerLiveUrl).validate().responseJSON { (response) in
-            if let error = response.error {
-                completion(nil,error)
-                
-            } else if let jsonArray = response.result.value as? [[String:Any]] {
-                completion(jsonArray,nil)
-                
-            } else if let jsonDict = response.result.value as? [String:Any] {
-                completion([jsonDict],nil)
-                
-            }
-        }
-    }
+//    func fetchJSON() {
+//        getJSON { [self] (json, error) in
+//            if let error = error {
+//                print("Can't fetch json", error)
+//                return
+//            }
+//
+//            if let jsonArray = json {
+//
+//                if jsonArray.isEmpty {
+//                    self.liveScoreLabel.text = "No live game at this moment"
+//                }
+//
+//                for liveGame in jsonArray {
+//                    print(liveGame)
+//                }
+//            }
+//        }
+//    }
+//
+//    typealias WebServicesResponse = ([[String:Any]]?, Error?) -> Void
+//
+//    func getJSON(completion: @escaping WebServicesResponse) {
+//        Alamofire.request(soccerLiveUrl).validate().responseJSON { (response) in
+//            if let error = response.error {
+//                completion(nil,error)
+//
+//            } else if let jsonArray = response.result.value as? [[String:Any]] {
+//                completion(jsonArray,nil)
+//
+//            } else if let jsonDict = response.result.value as? [String:Any] {
+//                completion([jsonDict],nil)
+//
+//            }
+//        }
+//    }
 }
 
 // MARK: - TAbleView Functions

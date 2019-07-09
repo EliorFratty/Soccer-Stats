@@ -105,10 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				CE9C462A22634500008DCD5F /* Main.storyboard */,
-				CE0E2090226CE86400611274 /* PlayerJoinedToGameCell.swift */,
-				CE88E8FA228941DA009E7DEE /* UserCell.swift */,
-				CEF3D4B82259DE9200E30E7E /* chooseTeamCell.swift */,
-				CEA218DF2265E476001BC7C9 /* GameCell.swift */,
+				CEA1D4C022D4668000466874 /* TableViewCells */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -174,7 +171,7 @@
 			children = (
 				CEFCFEA722662956008E39F0 /* PreviousGameViewController.swift */,
 				CEFCFEA9226629E1008E39F0 /* FutureGameViewController.swift */,
-				CE75DD622242DA390039D551 /* Login */,
+				CE75DD5E2242D6C10039D551 /* LogInViewController.swift */,
 				CE75DD502242D56A0039D551 /* AddTeamViewController.swift */,
 				CE75DD512242D56A0039D551 /* TeamViewController.swift */,
 				CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */,
@@ -184,12 +181,15 @@
 			path = Control;
 			sourceTree = "<group>";
 		};
-		CE75DD622242DA390039D551 /* Login */ = {
+		CEA1D4C022D4668000466874 /* TableViewCells */ = {
 			isa = PBXGroup;
 			children = (
-				CE75DD5E2242D6C10039D551 /* LogInViewController.swift */,
+				CE0E2090226CE86400611274 /* PlayerJoinedToGameCell.swift */,
+				CE88E8FA228941DA009E7DEE /* UserCell.swift */,
+				CEF3D4B82259DE9200E30E7E /* chooseTeamCell.swift */,
+				CEA218DF2265E476001BC7C9 /* GameCell.swift */,
 			);
-			path = Login;
+			path = TableViewCells;
 			sourceTree = "<group>";
 		};
 		CEF3D4B72259D7AF00E30E7E /* Side bar */ = {
@@ -497,6 +497,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W4KP2ZRB3H;
 				INFOPLIST_FILE = Soccer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -516,6 +517,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W4KP2ZRB3H;
 				INFOPLIST_FILE = Soccer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

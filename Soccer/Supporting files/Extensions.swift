@@ -19,7 +19,6 @@ enum MenuOption: Int, CustomStringConvertible {
             return "Logout"
         }
     }
-  
 }
 
 let imageCache = NSCache<AnyObject, AnyObject>()
@@ -34,12 +33,10 @@ extension UIImageView{
             self.image = chachedImage
             return
         }
-        
-        
-        
+
         let url = URL(string: URLString)
         
-        guard let url2 = url else {print("cantuplaodImageWith?url") ; return}
+        guard let url2 = url else {print("cantuplaodImageWith?\(String(describing: url))") ; return}
         
         URLSession.shared.dataTask(with: url2) { (data, response, error) in
             if let error = error {
@@ -48,22 +45,19 @@ extension UIImageView{
             }
             
             DispatchQueue.main.async {
-                
                 if let downloadedImage = UIImage(data: data!) {
                     imageCache.setObject(downloadedImage, forKey: URLString as AnyObject)
                     self.image = downloadedImage
-
                 }
             }
-            }.resume()
+        }.resume()
     }
-    
 }
 
 extension UIButton {
     
     func pulsate() {
-        
+       
         let puls = CASpringAnimation(keyPath: "transform.scale")
         puls.duration = 0.6
         puls.fromValue = 1.0
@@ -74,7 +68,6 @@ extension UIButton {
         puls.damping = 1.0
         
         layer.add(puls, forKey: nil)
-
     }
     
     func flash() {
@@ -88,7 +81,6 @@ extension UIButton {
         puls.repeatCount = 3
 
         layer.add(puls, forKey: nil)
-        
     }
     
     func shake() {
@@ -109,7 +101,6 @@ extension UIButton {
         puls.toValue = toValue
 
         layer.add(puls, forKey: nil)
-        
     }
 }
 
@@ -126,6 +117,15 @@ extension UIViewController {
         let action = UIAlertAction(title: "Retary", style: .default, handler: nil)
         alert.addAction(action)
         present(alert,animated: true, completion: nil)
+    }
+    
+    func hideKeyboard() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(DismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func DismissKeyboard(){
+        view.endEditing(true)
     }
 }
 

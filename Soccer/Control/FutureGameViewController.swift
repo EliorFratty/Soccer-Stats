@@ -298,6 +298,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
                             self.weatherSummeryLabel.text = weatherInfo.summary
                             self.weatherTemperatureLabel.text = "\(Int((weatherInfo.minTemperature - 32) * 5/9)) - \(Int((weatherInfo.maxTemperature - 32) * 5/9)) C"
                             self.weatherImage.image = UIImage(named: weatherInfo.icon)
+                            print(weatherInfo.icon)
                         } else {
                              self.weatherSummeryLabel.text = "No information on this date... try again in few days"
                         }

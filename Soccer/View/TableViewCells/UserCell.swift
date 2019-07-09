@@ -2,7 +2,7 @@
 //  UserCell.swift
 //  Soccer
 //
-//  Created by User on 06/04/2019.
+//  Created by User on 05/05/2019.
 //  Copyright © 2019 User. All rights reserved.
 //
 
@@ -10,15 +10,14 @@ import UIKit
 
 class UserCell: UITableViewCell {
     
-    var Player: Player? {
+    var player: Player? {
         didSet{
-            textLabel?.text = Player?.fullName
-            detailTextLabel?.text = Player?.email
-            profileImageView.loadImageUsingCatchWithUrlString(URLString: Player!.profileImageUrl)
+            textLabel?.text = player?.fullName
+            detailTextLabel?.text = player?.email
+            profileImageView.loadImageUsingCatchWithUrlString(URLString: player!.profileImageUrl)
         }
     }
-
-    
+ 
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -36,13 +35,11 @@ class UserCell: UITableViewCell {
         return imageView
     }()
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
         addSubview(profileImageView)
         profileImageAnchor()
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -55,5 +52,4 @@ class UserCell: UITableViewCell {
         profileImageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
     }
-    
 }
