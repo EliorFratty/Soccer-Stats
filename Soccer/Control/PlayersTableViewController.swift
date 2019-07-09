@@ -40,6 +40,52 @@ class PlayersTableViewController: UIViewController{
         return sb
     }()
     
+    let iconsContainerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .white
+        
+
+        // configuration options
+        let iconHeight: CGFloat = 45
+        let padding: CGFloat = 9
+        
+        let images = [#imageLiteral(resourceName: "red_heart"), #imageLiteral(resourceName: "blue_like"), #imageLiteral(resourceName: "surprised"), #imageLiteral(resourceName: "angry"), #imageLiteral(resourceName: "cry"), #imageLiteral(resourceName: "cry_laugh")]
+        
+        let arrangedSubviews = images.map({ (image) -> UIView in
+            let imageView = UIImageView(image: image)
+            imageView.layer.cornerRadius = iconHeight / 2
+            // required for hit testing
+            imageView.isUserInteractionEnabled = true
+            return imageView
+
+        })
+        
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.distribution = .fillEqually
+        
+        stackView.spacing = padding
+        stackView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        stackView.isLayoutMarginsRelativeArrangement = true
+        
+        containerView.addSubview(stackView)
+        
+        let numIcons = CGFloat(arrangedSubviews.count)
+        let width =  numIcons * iconHeight + (numIcons + 1) * padding
+        
+        containerView.frame = CGRect(x: 0, y: 0, width: width, height: iconHeight + 2 * padding)
+        containerView.layer.cornerRadius = containerView.frame.height / 2
+        
+        // shadow
+        containerView.layer.shadowColor = UIColor(white: 0.4, alpha: 0.4).cgColor
+        containerView.layer.shadowRadius = 8
+        containerView.layer.shadowOpacity = 0.5
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        
+        stackView.frame = containerView.frame
+        
+        return containerView
+    }()
+    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -58,6 +104,8 @@ class PlayersTableViewController: UIViewController{
         makeNavBar()
         importTeamPlayersFromDB()
         tableView.allowsMultipleSelectionDuringEditing = true
+        
+        setupLongPressGesture()
   
     }
 
@@ -141,6 +189,75 @@ class PlayersTableViewController: UIViewController{
             }
         }
     }
+    
+    fileprivate func setupLongPressGesture() {
+        view.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress)))
+    }
+    
+    @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            handleGestureBegan(gesture: gesture)
+        } else if gesture.state == .ended {
+            
+            // clean up the animation
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                let stackView = self.iconsContainerView.subviews.first
+                stackView?.subviews.forEach({ (imageView) in
+                    imageView.transform = .identity
+                })
+                
+                self.iconsContainerView.transform = self.iconsContainerView.transform.translatedBy(x: 0, y: 50)
+                self.iconsContainerView.alpha = 0
+                
+            }, completion: { (_) in
+                self.iconsContainerView.removeFromSuperview()
+            })
+            
+            
+        } else if gesture.state == .changed {
+            handleGestureChanged(gesture: gesture)
+        }
+    }
+    
+    fileprivate func handleGestureChanged(gesture: UILongPressGestureRecognizer) {
+        let pressedLocation = gesture.location(in: self.iconsContainerView)
+        
+        let fixedYLocation = CGPoint(x: pressedLocation.x, y: self.iconsContainerView.frame.height / 2)
+        
+        let hitTestView = iconsContainerView.hitTest(fixedYLocation, with: nil)
+        
+        if hitTestView is UIImageView {
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                
+                let stackView = self.iconsContainerView.subviews.first
+                stackView?.subviews.forEach({ (imageView) in
+                    imageView.transform = .identity
+                })
+                
+                hitTestView?.transform = CGAffineTransform(translationX: 0, y: -50)
+                
+            })
+        }
+    }
+    
+    fileprivate func handleGestureBegan(gesture: UILongPressGestureRecognizer) {
+        view.addSubview(iconsContainerView)
+        
+        let pressedLocation = gesture.location(in: self.view)
+        
+        // transformation of the red box
+        let centeredX = (view.frame.width - iconsContainerView.frame.width) / 2
+        
+        iconsContainerView.alpha = 0
+        self.iconsContainerView.transform = CGAffineTransform(translationX: centeredX, y: pressedLocation.y)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            
+            self.iconsContainerView.alpha = 1
+            self.iconsContainerView.transform = CGAffineTransform(translationX: centeredX, y: pressedLocation.y - self.iconsContainerView.frame.height)
+        })
+    }
 }
 
 // MARK: - TableView functions
@@ -182,41 +299,6 @@ extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
-    
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//
-//        let playerToDelete: String
-//
-//        if searching {
-//
-//            playerToDelete = searchedPlayers[indexPath.row].fullName
-//            deletePlayerFromTeams(playerToDelete: searchedPlayers[indexPath.row].fullName)
-//
-//        } else  {
-//
-//            playerToDelete = players[indexPath.row].fullName
-//        }
-//
-//        self.searchedPlayers.remove(at: indexPath.row)
-//        self.tableView.deleteRows(at: [indexPath], with: .automatic )
-//
-//        DBService.shared.allTeams.child(TeamViewController.team.name!).child("Players").child(playerToDelete).removeValue(){ (error, ref) in }
-//        tableView.reloadData()
-//    }
-//
-//    func deletePlayerFromTeams(playerToDelete: String) {
-//        var indexPlayerToDelete = 0
-//
-//        for player in players {
-//            let name = player.fullName
-//            if name == playerToDelete {
-//                break
-//            }
-//            indexPlayerToDelete += 1
-//        }
-//
-//        players.remove(at: indexPlayerToDelete)
-//    }
 }
 
 // MARK: - SearchBar functions

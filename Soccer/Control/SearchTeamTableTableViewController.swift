@@ -97,7 +97,7 @@ class SearchTeamTableTableViewController: UIViewController{
     }
     
     @objc func addTeamToDB(){
-        let addTeamViewController = AddTeamViewController()
+        let addTeamViewController = AddNewTeamViewController()
         navigationController?.pushViewController(addTeamViewController, animated: true)
     }
 

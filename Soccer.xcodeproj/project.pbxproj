@@ -19,7 +19,7 @@
 		CE75DD482242D5440039D551 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD432242D5440039D551 /* Team.swift */; };
 		CE75DD4A2242D5440039D551 /* DBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD452242D5440039D551 /* DBService.swift */; };
 		CE75DD562242D56A0039D551 /* PlayersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */; };
-		CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD502242D56A0039D551 /* AddTeamViewController.swift */; };
+		CE75DD582242D56A0039D551 /* AddNewTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD502242D56A0039D551 /* AddNewTeamViewController.swift */; };
 		CE75DD592242D56A0039D551 /* TeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD512242D56A0039D551 /* TeamViewController.swift */; };
 		CE75DD5F2242D6C10039D551 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE75DD5E2242D6C10039D551 /* LogInViewController.swift */; };
 		CE88E8FB228941DA009E7DEE /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE88E8FA228941DA009E7DEE /* UserCell.swift */; };
@@ -52,7 +52,7 @@
 		CE75DD432242D5440039D551 /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		CE75DD452242D5440039D551 /* DBService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBService.swift; sourceTree = "<group>"; };
 		CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayersTableViewController.swift; sourceTree = "<group>"; };
-		CE75DD502242D56A0039D551 /* AddTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTeamViewController.swift; sourceTree = "<group>"; };
+		CE75DD502242D56A0039D551 /* AddNewTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD512242D56A0039D551 /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamViewController.swift; sourceTree = "<group>"; };
 		CE75DD5E2242D6C10039D551 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		CE88E8FA228941DA009E7DEE /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
@@ -172,7 +172,7 @@
 				CEFCFEA722662956008E39F0 /* PreviousGameViewController.swift */,
 				CEFCFEA9226629E1008E39F0 /* FutureGameViewController.swift */,
 				CE75DD5E2242D6C10039D551 /* LogInViewController.swift */,
-				CE75DD502242D56A0039D551 /* AddTeamViewController.swift */,
+				CE75DD502242D56A0039D551 /* AddNewTeamViewController.swift */,
 				CE75DD512242D56A0039D551 /* TeamViewController.swift */,
 				CE75DD4E2242D56A0039D551 /* PlayersTableViewController.swift */,
 				CEEB69EB224FEFEC001362D8 /* SearchTeamTableTableViewController.swift */,
@@ -337,7 +337,7 @@
 				CE75DD472242D5440039D551 /* PlayersInTeams.swift in Sources */,
 				CE75DD462242D5440039D551 /* Player.swift in Sources */,
 				CE75DD4A2242D5440039D551 /* DBService.swift in Sources */,
-				CE75DD582242D56A0039D551 /* AddTeamViewController.swift in Sources */,
+				CE75DD582242D56A0039D551 /* AddNewTeamViewController.swift in Sources */,
 				CEEB69EC224FEFEC001362D8 /* SearchTeamTableTableViewController.swift in Sources */,
 				CE1CE784224774CE007971A9 /* WeatherJSON.swift in Sources */,
 				CEFCFEAA226629E1008E39F0 /* FutureGameViewController.swift in Sources */,
