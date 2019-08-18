@@ -176,7 +176,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     // MARK:- Services
     
     func getPlayerComingToGame() {
-        guard let userTeam = TeamViewController.team else {return}
+        guard let userTeam = MainUICVC.team else {return}
         guard let userTeamName = userTeam.name else {return}
         
         guard let game = game else {return}

@@ -8,7 +8,6 @@
 
 import UIKit
 import Firebase
-import LBTATools
 import Alamofire
 
 class HomeController: UIViewController {
@@ -17,14 +16,11 @@ class HomeController: UIViewController {
 
     static var userAsPlayer = Player()
 
-    
     var delegate: HomeControllerDelegate?
     private var allTeams = [Team]()
     private let cellID = "myTeamCell"
     private var changedUser = false
     
-    private let soccerLiveUrl = ""
-
     private lazy var tableView: UITableView = {
         let tv = UITableView()
         
@@ -35,11 +31,8 @@ class HomeController: UIViewController {
         return tv
     }()
     
-    private let liveScoreLabel = UILabel(text: "", font: UIFont(name: "Arial", size: 25), textColor: #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1), textAlignment: .left, numberOfLines: 1)
-    
     private let activityIndic: UIActivityIndicatorView = {
         let ai = UIActivityIndicatorView(style: .gray)
-        ai.translatesAutoresizingMaskIntoConstraints = false
         ai.startAnimating()
         
         return ai
@@ -53,7 +46,7 @@ class HomeController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        view.addSubviews(tableView, liveScoreLabel)
+        view.addSubviews(tableView)
         view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
 
         configurateNavigationBar()
@@ -68,30 +61,15 @@ class HomeController: UIViewController {
         reciveTeamsFromDB()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        tableView.reloadData()
-    }
-    
     //MARK: - Configurations
     
     func configurateTableView() {
         
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        tableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        tableView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/3).isActive = true
+        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor)
         
         tableView.addSubview(activityIndic)
-        activityIndic.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        activityIndic.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        activityIndic.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        activityIndic.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        liveScoreLabel.anchor(top: tableView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor,padding: .init(top: 0, left: 10, bottom: 0, right: 0)  , size: .init(width: 0, height: 0))
-        liveScoreLabel.isHidden = true
-        
+        activityIndic.centerInSuperview(size: CGSize(width: 50, height: 50))
+
     }
     
     func configurateNavigationBar() {
@@ -121,9 +99,7 @@ class HomeController: UIViewController {
     }
     
     @objc func handleMenuToggle() {
-        
         delegate?.handleMenuToggle(forMenuOption: nil)
-        
     }
 
     // MARK: - Service
@@ -139,26 +115,21 @@ class HomeController: UIViewController {
         guard let uid = Auth.auth().currentUser?.uid else {print("Error") ; return }
        
         DBService.shared.users.child(uid).observeSingleEvent(of:.value) { [self] (snapshot) in
+           
             if let dict = snapshot.value as? [String:Any] {
-                if let name = dict["fullName"] as? String,
-                    let email = dict["email"] as? String,
-                    let profileImageUrl = dict["profileImageUrl"] as? String{
-                   
-                    HomeController.userAsPlayer = Player(id: snapshot.key, fullName: name, email:email, ProfileUrl:profileImageUrl)
-                    self.navigationItem.leftBarButtonItem?.isEnabled = true
-                    self.navigationItem.rightBarButtonItem?.isEnabled = true
-                    self.liveScoreLabel.isHidden = false
-                    self.navigationItem.title = "Hello \(name)"
-                    self.activityIndic.stopAnimating()
-                    //self.fetchJSON()
-                }
+                
+                let player = Player(id: snapshot.key, dict: dict)
+                self.navigationItem.title = "Hello \(player.fullName)"
+                HomeController.userAsPlayer = player
+                self.enabledNavigationBarButtonsStopIndic()
+                
             }
         }
     }
     
     func reciveTeamsFromDB() {
-        navigationItem.leftBarButtonItem?.isEnabled = false
-        navigationItem.rightBarButtonItem?.isEnabled = false
+        disableNavigationBarButtons()
+
         guard let uid = Auth.auth().currentUser?.uid else {print("Error to get uid") ; return }
 
         allTeams.removeAll()
@@ -180,11 +151,7 @@ class HomeController: UIViewController {
 
             guard let snapDict = snapshot.value as? [String : Any] else {return}
                         
-            let team = Team()
-            team.name = snapDict["name"] as? String
-            team.date = snapDict["date"] as? String
-            team.teamSummary = snapDict["summary"] as? String
-            team.teamImoji = snapDict["imoji"] as? String ?? "A"
+            let team = Team(snapDict: snapDict)
             
             self.allTeams.append(team)
 
@@ -194,42 +161,16 @@ class HomeController: UIViewController {
         })
     }
     
-//    func fetchJSON() {
-//        getJSON { [self] (json, error) in
-//            if let error = error {
-//                print("Can't fetch json", error)
-//                return
-//            }
-//
-//            if let jsonArray = json {
-//
-//                if jsonArray.isEmpty {
-//                    self.liveScoreLabel.text = "No live game at this moment"
-//                }
-//
-//                for liveGame in jsonArray {
-//                    print(liveGame)
-//                }
-//            }
-//        }
-//    }
-//
-//    typealias WebServicesResponse = ([[String:Any]]?, Error?) -> Void
-//
-//    func getJSON(completion: @escaping WebServicesResponse) {
-//        Alamofire.request(soccerLiveUrl).validate().responseJSON { (response) in
-//            if let error = response.error {
-//                completion(nil,error)
-//
-//            } else if let jsonArray = response.result.value as? [[String:Any]] {
-//                completion(jsonArray,nil)
-//
-//            } else if let jsonDict = response.result.value as? [String:Any] {
-//                completion([jsonDict],nil)
-//
-//            }
-//        }
-//    }
+    func enabledNavigationBarButtonsStopIndic(){
+        self.navigationItem.leftBarButtonItem?.isEnabled = true
+        self.navigationItem.rightBarButtonItem?.isEnabled = true
+        self.activityIndic.stopAnimating()
+    }
+    
+    func disableNavigationBarButtons(){
+        navigationItem.leftBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem?.isEnabled = false
+    }
 }
 
 // MARK: - TAbleView Functions
@@ -256,10 +197,11 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         guard let uid = Auth.auth().currentUser?.uid else { print("cant find the uid"); return}
-        let teamToRemove = allTeams[indexPath.row].name!
+        guard let teamToRemove = allTeams[indexPath.row].name else { print("cant find the team name"); return}
         
         allTeams.remove(at: indexPath.row)
         self.tableView.deleteRows(at: [indexPath], with: .automatic )
+        
        
         DBService.shared.teamOfUser.child(uid).child(teamToRemove).removeValue()
         DBService.shared.playersInTeam.child(teamToRemove).child(uid).removeValue()
@@ -268,22 +210,22 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     
     func deleteTeamFromTeams(teamToDelete: String) {
         
-        allTeams = allTeams.filter({$0.name! != teamToDelete})
+        allTeams = allTeams.filter({$0.name != teamToDelete})
     
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        TeamViewController.team = allTeams[indexPath.row]
+        MainUICVC.team = allTeams[indexPath.row]
         
-        let teamViewController = TeamViewController()
+        let flowLayout = UICollectionViewFlowLayout()
+        
+        let teamViewController = MainUICVC(collectionViewLayout: flowLayout)
         navigationController?.pushViewController(teamViewController, animated: true)
     
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-       
         return 72
-   
     }
 }

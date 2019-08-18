@@ -50,7 +50,6 @@ struct WeatherJSON {
             var forcastArray: [WeatherJSON] = []
             
             if let data = data {
-                
                 do {
                     if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] {
                         if let dailyForcasts = json["daily"] as? [String:Any] {

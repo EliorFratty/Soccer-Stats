@@ -1,473 +1,298 @@
 //
-//  TeamTableViewController.swift
-//  Soccer Stats
+//  ViewController.swift
+//  KaduregelStats
 //
-//  Created by User on 08/03/2019.
+//  Created by User on 30/07/2019.
 //  Copyright © 2019 User. All rights reserved.
 //
 
 import UIKit
-import Firebase
 
-class TeamViewController: UIViewController {
+class MainUICVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    // MARK:- Propreties
-    
-    var datePicker: UIDatePicker?
-    let cellId = "gameCell"
+    let categoryCellID = "categoryCell"
+    let optionsCellID = "optionsCell"
     
     static var team : Team!
-    let player = HomeController.userAsPlayer
-    let userTeam = TeamViewController.team
-
-    var games = [Game]()
-
-    let addNewGameInputContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        view.layer.masksToBounds = true
-        return view
+    
+    let categories: [Category] = {
+        var catg = [Category]()
+        catg.append(Category(name: "Stats", image: #imageLiteral(resourceName: "statsImage")))
+        catg.append(Category(name: "Players", image: #imageLiteral(resourceName: "playersImage")))
+        catg.append(Category(name: "Games", image: #imageLiteral(resourceName: "GamesImage")))
+        catg.append(Category(name: "Payment", image: #imageLiteral(resourceName: "paymentImage")))
+        return catg
     }()
     
-    let newGameAddDateTextField: UITextField = {
-        let tf = UITextField()
-        tf.placeholder = "Date && Hour"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.clearButtonMode = .whileEditing
-        tf.keyboardType = .emailAddress
-        
-        return tf
+    let options: [Option] = {
+        var opt = [Option]()
+        opt.append(Option(name: "Change team", icon: #imageLiteral(resourceName: "changeTeamIcon")))
+        opt.append(Option(name: "Managers", icon: #imageLiteral(resourceName: "menajersIcon")))
+        opt.append(Option(name: "Rules", icon: #imageLiteral(resourceName: "RulesIcone")))
+        opt.append(Option(name: "Weather", icon: #imageLiteral(resourceName: "WeatherIcone")))
+        opt.append(Option(name: "Setting", icon: #imageLiteral(resourceName: "SettingIcone")))
+        opt.append(Option(name: "Contact Us", icon: #imageLiteral(resourceName: "ContactUsIcon")))
+        return opt
     }()
     
-    let newGameAddLocationTextField: UITextField = {
-        let tf = UITextField()
-        tf.placeholder = "Location"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.clearButtonMode = .whileEditing
-        
-        return tf
-    }()
-    
-    lazy var newGameCreateButton : UIButton = {
-        let button = UIButton()
-        button.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
-        button.setTitle("Create", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        
-        button.addTarget(self, action: #selector(newGameAddButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var newGameCancelButton : UIButton = {
-        let button = UIButton()
-        button.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
-        button.setTitle("Cancel", for: .normal)
-        button.setTitleColor(.red, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        
-        button.addTarget(self, action: #selector(newGameCancelButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var tableView: UITableView = {
-        let tb = UITableView()
-        tb.translatesAutoresizingMaskIntoConstraints = false
-        tb.register(GameCell.self, forCellReuseIdentifier: cellId)
-        return tb
-    }()
-
-    let inputContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        view.layer.masksToBounds = true
-        return view
-    }()
-    
-    lazy var playersButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("Players", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        
-        button.addTarget(self, action: #selector(playersTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var futureGameButton : UIButton = {
-        let button = UIButton()
-        button.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
-        button.setTitle("Next matches", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        
-        button.addTarget(self, action: #selector(futureGameTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var previousGameButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("Previous games", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        
-        button.addTarget(self, action: #selector(previousGameTapped), for: .touchUpInside)
-        return button
-    }()
-
-    // MARK:- Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        getAllGamesFromDB()
-       
-        tableView.delegate = self
-        tableView.dataSource = self
+        collectionView?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
-        makeDatePicker()
-        makeNavBar()
-        setupImageBackgorund()
-
-        view.addSubviews(inputContainerView,addNewGameInputContainerView)
+        collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: categoryCellID)
+        collectionView.register(OptionsCell.self, forCellWithReuseIdentifier: optionsCellID)
         
-        setupinputContainerViewConstraint()
-        setUpaddNewGameInputContainerView()
-        
+        collectionView.allowsSelection = true
     }
     
-    //MARK:- Services
-    
-    func getAllGamesFromDB() {
-        guard let userTeam = userTeam else {return}
-        guard let userTeamName = userTeam.name else {return}
-
-        DBService.shared.games.child(userTeamName).observeSingleEvent(of: .value) { [self] (snapshot) in
-            if let teamGames = snapshot.value as? [String:[String:Any]] {
-                
-                let releaseDateFormatter = DateFormatter()
-                releaseDateFormatter.dateFormat = "dd-MM-yyyy"
-                
-                for games in teamGames {
-                    let date = games.key
-                    let hour = games.value["hour"] as! String
-                    let location = games.value["location"] as! String
-                    let isComing = self.checkIfPlayerIsComingToGame(playersInGame: games.value["players"] as? [String:Any])
-                    
-                    let gameDate = releaseDateFormatter.date(from: date)
-                    
-                    if gameDate!.compare(Date()) == .orderedDescending {
-                        let game = Game(date:date, hour: hour, place: location, isComing: isComing)
-                        self.games.append(game)
-                    }
-                }
-
-                self.games.sort(by: { (game1, game2) -> Bool in
-                    
-                    
-                    let date1 = releaseDateFormatter.date(from: game1.date)
-                    let date2 = releaseDateFormatter.date(from: game2.date)
-                    return date1?.compare(date2!) == .orderedAscending
-                    
-                })
-                self.tableView.reloadData()
-            }
-        }
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
     }
     
-    func checkIfPlayerIsComingToGame(playersInGame: [String:Any]?) -> Bool{
-        if let pGames = playersInGame {
-            for playerInGame in pGames {
-                if playerInGame.key == player.fullName {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    //MARK: - Configurations
-
-    func setupImageBackgorund() {
-        let imageView = UIImageView(image: UIImage(named: "soccerFiled"))
-        imageView.contentMode = .scaleAspectFill
-        self.view.addSubview(imageView)
-        imageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
-    }
-    
-    var tableViewHeightAnchor = NSLayoutConstraint()
-    var tableViewTopAnchor = NSLayoutConstraint()
-    var inputContainerViewHeightAnchor = NSLayoutConstraint()
-    
-    func setupinputContainerViewConstraint(){
-        inputContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        inputContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        inputContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
-        inputContainerViewHeightAnchor = inputContainerView.heightAnchor.constraint(equalToConstant: 150)
-        inputContainerViewHeightAnchor.isActive = true
-        
-        inputContainerView.addSubviews(playersButton,previousGameButton,futureGameButton,tableView)
-
-        playersButton.topAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
-        playersButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        playersButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        playersButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        tableViewTopAnchor = futureGameButton.topAnchor.constraint(equalTo: playersButton.bottomAnchor)
-        tableViewTopAnchor.isActive = true
-        futureGameButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        futureGameButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        futureGameButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        previousGameButton.topAnchor.constraint(equalTo: futureGameButton.bottomAnchor).isActive = true
-        previousGameButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        previousGameButton.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        previousGameButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-        tableView.topAnchor.constraint(equalTo: futureGameButton.bottomAnchor).isActive = true
-        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        tableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        tableViewHeightAnchor = tableView.heightAnchor.constraint(equalToConstant: 0)
-        tableViewHeightAnchor.isActive = true
-
-    }
-    
-    var NewGameInputContainerViewHeightAnchor = NSLayoutConstraint()
-    
-    func setUpaddNewGameInputContainerView() {
-        addNewGameInputContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        addNewGameInputContainerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        addNewGameInputContainerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        NewGameInputContainerViewHeightAnchor = addNewGameInputContainerView.heightAnchor.constraint(equalToConstant: 0)
-        NewGameInputContainerViewHeightAnchor.isActive = true
-        
-        addNewGameInputContainerView.addSubviews(newGameAddDateTextField,newGameAddLocationTextField,newGameCreateButton,newGameCancelButton)
-        
-        newGameAddDateTextField.delegate = self
-        newGameAddLocationTextField.delegate = self
-        
-        newGameAddDateTextField.topAnchor.constraint(equalTo: addNewGameInputContainerView.topAnchor).isActive = true
-        newGameAddDateTextField.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor,constant: 10).isActive = true
-        newGameAddDateTextField.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor,constant: -15).isActive = true
-        newGameAddDateTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        newGameAddLocationTextField.topAnchor.constraint(equalTo: newGameAddDateTextField.bottomAnchor).isActive = true
-        newGameAddLocationTextField.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor,constant: 10).isActive = true
-        newGameAddLocationTextField.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor,constant: -15).isActive = true
-        newGameAddLocationTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        newGameCreateButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
-        newGameCreateButton.leftAnchor.constraint(equalTo: addNewGameInputContainerView.leftAnchor).isActive = true
-        newGameCreateButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
-        newGameCreateButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        newGameCancelButton.topAnchor.constraint(equalTo: newGameAddLocationTextField.bottomAnchor).isActive = true
-        newGameCancelButton.leftAnchor.constraint(equalTo: newGameCreateButton.rightAnchor).isActive = true
-        newGameCancelButton.widthAnchor.constraint(equalTo: addNewGameInputContainerView.widthAnchor, multiplier: 1/2).isActive = true
-        newGameCancelButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-    }
-
-    // MARK:- Handlers
-    
-    func makeDatePicker() {
-        datePicker = UIDatePicker()
-        datePicker?.datePickerMode = .dateAndTime
-        datePicker?.addTarget(self, action: #selector(dateChanged(datePicker:)), for: .valueChanged)
-        
-        newGameAddDateTextField.inputView = datePicker
-    }
-    
-    @objc func addNewGameTapped() {
-        self.NewGameInputContainerViewHeightAnchor.constant = 150
-            UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc func newGameCancelButtonTapped() {
-        NewGameInputContainerViewHeightAnchor.constant = 0
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-    }
-
-    @objc func newGameAddButtonTapped() {
-        NewGameInputContainerViewHeightAnchor.constant = 0
-        
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.section == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCellID, for: indexPath) as! CategoryCell
+            cell.category = categories[indexPath.row]
+            return cell
         }
         
-        if newGameAddDateTextField.text! != "" {
-            let alert = UIAlertController(title: "You created new game", message: "at: \(newGameAddDateTextField.text!) \n\(newGameAddLocationTextField.text!)", preferredStyle: .alert)
-            let action = UIAlertAction(title: "Ok", style: .default) { (action) in
-                self.createNewGame(dateHour: self.newGameAddDateTextField.text!, location:self.newGameAddLocationTextField.text!)
-            }
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-            alert.addAction(action)
-            alert.addAction(cancelAction)
-            present(alert,animated: true, completion: nil)
-        }
-    }
-    
-    func createNewGame(dateHour:String, location: String){
-        guard let userTeam = userTeam else {return}
-        guard let userTeamName = userTeam.name else {return}
-        let date = String(dateHour.split(separator: " ").first!).replacingOccurrences(of: "/", with: "-")
-        let hour = String(dateHour.split(separator: " ").last!)
-
-        let param = ["hour": hour,
-            "location":location
-        ]
-        
-        DBService.shared.games.child(userTeamName).child(date).setValue(param)
-    }
-    
-    private var isOpen = false
-
-    @objc func playersTapped() {
-        tableViewHeightAnchor.constant = 0
-        inputContainerViewHeightAnchor.constant = 150
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-        
-        isOpen = false
-        
-        let playerTableViewController = PlayersTableViewController()
-        navigationController?.pushViewController(playerTableViewController, animated: true)
-
-    }
-
-    @objc func previousGameTapped(){
-        let previousGameViewController = PreviousGameViewController()
-        present(previousGameViewController, animated: true, completion: nil)
-    }
-
-    @objc func futureGameTapped(){
-        
-        if games.isEmpty {
-            let alert = UIAlertController(title: "No game to show", message: "This team has no game to show", preferredStyle: .alert)
-            let action = UIAlertAction(title: "Ok", style: .default) { (action) in }
-            alert.addAction(action)
-            present(alert,animated: true, completion: nil)
-        }
-        
-        if !isOpen {
-            self.tableViewHeightAnchor.constant = CGFloat(50 * games.count)
-            self.inputContainerViewHeightAnchor.constant = CGFloat(150 + 50 * games.count)
-
-        } else {
-            self.tableViewHeightAnchor.constant = 0
-            self.inputContainerViewHeightAnchor.constant = 150
-
-        }
-        
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-            
-        }
-        
-        isOpen = !isOpen
-    }
-
-    // MARK: - NavigationBar Handler
-    
-    func makeNavBar() {
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New Match", style: .plain, target: self, action: #selector(addNewGameTapped))
-        navigationItem.rightBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToChooseTeam))
-        navigationItem.leftBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
-        self.navigationItem.title = TeamViewController.team.name! + " Team"
-    }
-    
-    @objc func goBackToChooseTeam() {
-        navigationController?.popToRootViewController(animated: true)
-    }
-    
-    @objc func dateChanged(datePicker: UIDatePicker) {
-         let dateFormatter = DateFormatter()
-         dateFormatter.dateFormat = "dd/MM/yyyy HH:mm"
-        newGameAddDateTextField.text = dateFormatter.string(from: datePicker.date)
-        view.endEditing(true)
-    }
-}
-
-// MARK: - TableView Functions
-
-extension TeamViewController: UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return games.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! GameCell
-        
-        cell.Game = games[indexPath.row]
-        cell.delegate = self
-        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: optionsCellID, for: indexPath) as! OptionsCell
+        cell.option = options[indexPath.row]
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let futureGameViewController = FutureGameViewController()
-        futureGameViewController.game = games[indexPath.row]
-        present(futureGameViewController, animated: true, completion: nil)
-        
-        tableView.deselectRow(at: indexPath, animated: true)
         
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        if section == 0 {
+            return categories.count
+        }
+        return options.count
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        view.endEditing(true)
-        return true
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        if indexPath.section == 0 {
+            return CGSize(width: view.frame.width / 2 - 15, height: 150)
+        }
+        
+        return CGSize(width: view.frame.width - 20 , height: 50)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        UIView.animate(withDuration: 0.4) {
+            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
+                cell.catrgoryImageview.transform = .init(scaleX: 0.95, y: 0.95)
+                cell.nameLabel.transform = .init(scaleX: 0.95, y: 0.95)
+                
+                cell.contentView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
+                
+            }
+        }
+        
+        if indexPath.section != 0 {
+            let cell = collectionView.cellForItem(at: indexPath)
+            cell?.layer.borderWidth = 2.0
+            cell?.layer.borderColor = UIColor.gray.cgColor
+            collectionView.deselectItem(at: indexPath, animated: true)
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        UIView.animate(withDuration: 0.4) {
+            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
+                cell.catrgoryImageview.transform = .identity
+                cell.nameLabel.transform = .identity
+                cell.contentView.backgroundColor = .clear
+            }
+        }
+        
+        if indexPath.section != 0 {
+            let cell = collectionView.cellForItem(at: indexPath)
+            cell?.layer.borderWidth = 0
+            cell?.layer.borderColor = UIColor.clear.cgColor
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return CGFloat(10)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section != 0 {
+            markOption(at: indexPath)
+            let option = options[indexPath.row]
+            popupOption(name: option.name)
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if indexPath.section != 0 {
+            demarkOption(at: indexPath)
+        }
+    }
+    
+    func popupOption(name: String){
+        switch name {
+        case "Contact Us":
+            view.addSubview(ContactUsPopUpView(frame: UIScreen.main.bounds))
+            break
+        case "Managers":
+            view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
+            break
+        default:
+            break
+        }
+    }
+    
+    func markOption(at indexPath: IndexPath){
+        let cell = collectionView.cellForItem(at: indexPath)
+        cell?.layer.borderWidth = 2.0
+        cell?.layer.borderColor = UIColor.gray.cgColor
+    }
+    
+    func demarkOption(at indexPath: IndexPath){
+        let cell = collectionView.cellForItem(at: indexPath)
+        cell?.layer.borderWidth = 0
+        cell?.layer.borderColor = UIColor.clear.cgColor
+    }
+    
+}
+
+//  MARK:- OptionCell Class
+
+class OptionsCell: UICollectionViewCell {
+    override init(frame: CGRect){
+        super.init(frame:frame)
+        setupView()
+    }
+    
+    var option: Option?{
+        didSet{
+            nameLabel.text = option?.name
+            optionIconview.image = option?.icon
+        }
+    }
+    
+    let nameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        return label
+    }()
+    
+    let viewSeperator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.22, green: 0.22, blue: 0.22, alpha: 1)
+        return view
+    }()
+    
+    let optionIconview: UIImageView = {
+        let iv = UIImageView()
+        iv.backgroundColor = .white
+        iv.layer.cornerRadius = 5
+        iv.layer.masksToBounds = true
+        iv.contentMode = .scaleAspectFit
+        
+        return iv
+    }()
+    
+    func setupView(){
+        backgroundColor = #colorLiteral(red: 0.9046169519, green: 0.9447903037, blue: 0.9739736915, alpha: 1)
+        layer.masksToBounds = true
+        layer.cornerRadius = 5
+        
+        addSubviews(optionIconview, nameLabel, viewSeperator)
+        
+        optionIconview.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 5, left: 3, bottom: 0, right: 0), size: CGSize(width: 30, height: frame.height - 10))
+        
+        viewSeperator.anchor(top: topAnchor, leading: optionIconview.trailingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 15), size: CGSize(width: 1, height: frame.height - 10))
+        
+        nameLabel.anchor(top: topAnchor, leading: viewSeperator.trailingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0), size: CGSize(width: frame.width, height: frame.height))
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
-extension TeamViewController: gameCellDelegate {
+
+
+//  MARK:- CategoryCell Class
+class CategoryCell: UICollectionViewCell {
     
-    func IsComingToGame(yesOrNo: Bool, date: String) {
-        guard let userTeam = userTeam else {return}
-        guard let userTeamName = userTeam.name else {return}
-        
-        
-        if yesOrNo {
-            let param = ["name": player.fullName]
-            DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).setValue(param)
-        } else {
-            DBService.shared.games.child(userTeamName).child(date).child("players").child(player.fullName).removeValue()
+    override init(frame: CGRect){
+        super.init(frame:frame)
+        setupView()
+        setupShadow()
+        backgroundColor = #colorLiteral(red: 0.9046169519, green: 0.9447903037, blue: 0.9739736915, alpha: 1)
+    }
+    
+    var category: Category?{
+        didSet{
+            nameLabel.text = category?.name
+            catrgoryImageview.image = category?.image
         }
     }
+    
+    private func setupShadow() {
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 3.0, height: 3.0)
+        layer.shadowRadius = 5.0
+        layer.shadowOpacity = 0.3
+        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: layer.cornerRadius).cgPath
+        
+        layer.masksToBounds = true
+        layer.cornerRadius = 10
+        layer.borderWidth = 1
+        layer.borderColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+    }
+    
+    let nameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = #colorLiteral(red: 0.0288759172, green: 0.8338691592, blue: 0.9850193858, alpha: 1)
+        label.font = UIFont.boldSystemFont(ofSize: 25)
+        return label
+    }()
+    
+    let catrgoryImageview: UIImageView = {
+        let iv = UIImageView()
+        iv.backgroundColor = .white
+        iv.layer.cornerRadius = 10
+        iv.layer.masksToBounds = true
+        
+        return iv
+    }()
+    
+    
+    func setupView(){
+        addSubviews(catrgoryImageview, nameLabel)
+        nameLabel.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0), size: CGSize(width: frame.width, height: frame.height/3))
+        catrgoryImageview.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+        
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
+
+struct Category {
+    let name: String
+    let image: UIImage
+}
+
+struct Option {
+    let name: String
+    let icon: UIImage
+}
+
 

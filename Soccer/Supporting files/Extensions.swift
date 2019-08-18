@@ -137,12 +137,6 @@ extension Date {
     }
 }
 
-extension UIView {
-    func addSubviews(_ views: UIView...) {
-        views.forEach{ addSubview($0)}
-    }
-}
-
 extension Int {
     var arc4random: Int{
         if self > 0 {
@@ -151,5 +145,34 @@ extension Int {
             return -Int(arc4random_uniform(UInt32(self)))
         }
         return 0;
+    }
+}
+
+
+extension UIView {
+    func addSubviews(_ views: UIView...) {
+        views.forEach{ addSubview($0)}
+    }
+    
+    func centerInXPositionSuperview(top: NSLayoutYAxisAnchor?, bottom: NSLayoutYAxisAnchor?, padding: UIEdgeInsets = .zero, size: CGSize) {
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        if let superviewCenterXAnchor = superview?.centerXAnchor {
+            centerXAnchor.constraint(equalTo: superviewCenterXAnchor).isActive = true
+        }
+        
+        if let top = top {
+            self.topAnchor.constraint(equalTo: top, constant: padding.top).isActive = true
+        }
+        
+        if let bottom = bottom {
+            self.bottomAnchor.constraint(equalTo: bottom, constant: -padding.bottom).isActive = true
+        }
+        
+        self.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+        
+        self.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        
     }
 }

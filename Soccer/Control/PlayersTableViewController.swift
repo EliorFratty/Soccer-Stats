@@ -21,7 +21,7 @@ class PlayersTableViewController: UIViewController{
     let cellID = "playerCell"
     
     let player = HomeController.userAsPlayer
-    let userTeam = TeamViewController.team
+    let userTeam = MainUICVC.team
     
     lazy var tableView: UITableView = {
         let tb = UITableView()
@@ -168,17 +168,10 @@ class PlayersTableViewController: UIViewController{
         
         DBService.shared.users.child(user).observeSingleEvent(of: .value) { (snapshot) in
             guard let snapDict = snapshot.value as? [String : Any] else {return}
-            if let fullName = snapDict["fullName"] as? String,
-                let email = snapDict["email"] as? String,
-                let profileImageUrl = snapDict["profileImageUrl"] as? String {
 
-                let player = Player(id:snapshot.key,
-                                    fullName: fullName,
-                                    email: email,
-                                    ProfileUrl: profileImageUrl)
-                self.players.append(player)
-            }
-
+            let player = Player(id: snapshot.key, dict: snapDict)
+            self.players.append(player)
+            
             // sort player from A-Z
             self.players.sort(){ (p1, p2) -> Bool in
                 return p1.fullName < p2.fullName

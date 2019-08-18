@@ -23,12 +23,12 @@ struct Player {
         profileImageUrl = ""
     }
 
-init(id: String ,fullName:String, email:String, ProfileUrl:String){
-    self.id = id
-    self.fullName = fullName
-    self.email = email
-    profileImageUrl = ProfileUrl
-}
+    init(id: String, dict: [String:Any]) {
+        self.id = id
+        fullName = dict["fullName"] as! String
+        email = dict["email"] as! String
+        profileImageUrl = dict["profileImageUrl"] as! String
+    }
     
 
 }

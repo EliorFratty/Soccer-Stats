@@ -78,7 +78,7 @@ class PreviousGameViewController: UIViewController {
     // MARK: - Service
     
     func getAllGamesFromDB() {
-        guard let userTeam = TeamViewController.team else {return}
+        guard let userTeam = MainUICVC.team else {return}
         guard let userTeamName = userTeam.name else {return}
         
         DBService.shared.games.child(userTeamName).observeSingleEvent(of: .value) { [self] (snapshot) in
