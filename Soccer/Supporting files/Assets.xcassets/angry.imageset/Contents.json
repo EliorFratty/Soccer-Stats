@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "newTeamImage.jpg",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "angry@2x.png",
       "scale" : "2x"
     },
     {

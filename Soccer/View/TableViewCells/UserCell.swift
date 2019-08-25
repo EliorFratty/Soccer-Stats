@@ -2,7 +2,7 @@
 //  UserCell.swift
 //  Soccer
 //
-//  Created by User on 06/04/2019.
+//  Created by User on 05/05/2019.
 //  Copyright © 2019 User. All rights reserved.
 //
 
@@ -10,15 +10,16 @@ import UIKit
 
 class UserCell: UITableViewCell {
     
-    var Player: Player? {
+    let profileImageViewHeight:CGFloat = 48
+    
+    var player: Player? {
         didSet{
-            textLabel?.text = Player?.fullName
-            detailTextLabel?.text = Player?.email
-            profileImageView.loadImageUsingCatchWithUrlString(URLString: Player!.profileImageUrl)
+            textLabel?.text = player?.fullName
+            detailTextLabel?.text = player?.email
+            profileImageView.loadImageUsingCatchWithUrlString(URLString: player!.profileImageUrl)
         }
     }
-
-    
+ 
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -26,23 +27,21 @@ class UserCell: UITableViewCell {
         detailTextLabel?.frame = CGRect(x: 64, y: detailTextLabel!.frame.origin.y+2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
     }
     
-    let profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 24
+        imageView.layer.cornerRadius = profileImageViewHeight/2
         imageView.layer.masksToBounds = true
         
         return imageView
     }()
-    
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
         addSubview(profileImageView)
         profileImageAnchor()
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -52,8 +51,7 @@ class UserCell: UITableViewCell {
     func profileImageAnchor() {
         profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8) .isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: profileImageViewHeight).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: profileImageViewHeight).isActive = true
     }
-    
 }

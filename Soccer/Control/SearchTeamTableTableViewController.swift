@@ -97,7 +97,7 @@ class SearchTeamTableTableViewController: UIViewController{
     }
     
     @objc func addTeamToDB(){
-        let addTeamViewController = AddTeamViewController()
+        let addTeamViewController = AddNewTeamViewController()
         navigationController?.pushViewController(addTeamViewController, animated: true)
     }
 
@@ -108,10 +108,7 @@ class SearchTeamTableTableViewController: UIViewController{
         DBService.shared.allTeams.observe(.childAdded) { [self] (snapshot) in
             guard let snapDict = snapshot.value as? [String : Any] else {return}
             
-            let team = Team()
-            team.name = snapDict["name"] as? String
-            team.date = snapDict["date"] as? String
-            team.teamImoji = snapDict["imoji"] as? String ?? "⚽️"
+            let team = Team(snapDict: snapDict)
             
             self.allTeams.append(team)
             
@@ -123,7 +120,6 @@ class SearchTeamTableTableViewController: UIViewController{
 }
 
 // MARK: - TableView Functions
-
 
 extension SearchTeamTableTableViewController: UITableViewDataSource, UITableViewDelegate {
     // MARK: - Table view data source

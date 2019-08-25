@@ -157,6 +157,7 @@ class AddNewTeamViewController: UIViewController {
     func setupImageBackgorund() {
         let imageView = UIImageView(image: UIImage(named: "newTeamImage"))
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         self.view.addSubview(imageView)
         imageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
         

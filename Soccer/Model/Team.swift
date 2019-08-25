@@ -12,7 +12,18 @@ class Team: NSObject {
     
     var date: String?
     var name: String?
-    var teamImoji = "⚽️"
+    var teamImoji: String?
     var teamSummary: String?
+    
+    init(snapDict: [String : Any]) {
+        name = snapDict["name"] as? String
+        date = snapDict["date"] as? String
+        teamSummary = snapDict["summary"] as? String
+        teamImoji = snapDict["imoji"] as? String ?? "A"
+    }
+    
+    override init() {
+        super.init()
+    }
 
 }

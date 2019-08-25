@@ -176,7 +176,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
     // MARK:- Services
     
     func getPlayerComingToGame() {
-        guard let userTeam = TeamViewController.team else {return}
+        guard let userTeam = MainUICVC.team else {return}
         guard let userTeamName = userTeam.name else {return}
         
         guard let game = game else {return}
@@ -298,6 +298,7 @@ class FutureGameViewController: UIViewController, CLLocationManagerDelegate {
                             self.weatherSummeryLabel.text = weatherInfo.summary
                             self.weatherTemperatureLabel.text = "\(Int((weatherInfo.minTemperature - 32) * 5/9)) - \(Int((weatherInfo.maxTemperature - 32) * 5/9)) C"
                             self.weatherImage.image = UIImage(named: weatherInfo.icon)
+                            print(weatherInfo.icon)
                         } else {
                              self.weatherSummeryLabel.text = "No information on this date... try again in few days"
                         }
