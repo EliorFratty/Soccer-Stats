@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ManagersPopUpView: UIView {
+class ManagersPopUpView: UIView, UITextFieldDelegate {
 
     let containerWidth =  UIScreen.main.bounds.width * 0.75
     let containerHeight = UIScreen.main.bounds.height * 0.45
@@ -25,6 +25,11 @@ class ManagersPopUpView: UIView {
         
         animateIn()
         setupAnchors()
+        addKeyBoardNotifications()
+    }
+    
+    deinit {
+        removeKeyBoardNotifications()
     }
     
     let scrollView: UIScrollView = {

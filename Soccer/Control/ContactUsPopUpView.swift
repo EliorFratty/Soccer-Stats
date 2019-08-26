@@ -25,6 +25,12 @@ class ContactUsPopUpView: UIView {
 
         animateIn()
         setupAnchors()
+        
+        addKeyBoardNotifications()
+    }
+    
+    deinit {
+        removeKeyBoardNotifications()
     }
 
     fileprivate let contactUsLabel: UILabel = {
@@ -136,7 +142,7 @@ extension ContactUsPopUpView: UITextViewDelegate{
     }
 }
 
-extension ContactUsPopUpView: UIGestureRecognizerDelegate{
+extension ContactUsPopUpView: UIGestureRecognizerDelegate {
     
     func setupTapGestureRecognizer() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(animateOut))
@@ -151,5 +157,9 @@ extension ContactUsPopUpView: UIGestureRecognizerDelegate{
         }
         return true
     }
+}
+
+extension ContactUsPopUpView: UITextFieldDelegate {
+    
 
 }

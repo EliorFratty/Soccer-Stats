@@ -173,6 +173,25 @@ extension UIView {
         self.widthAnchor.constraint(equalToConstant: size.width).isActive = true
         
         self.heightAnchor.constraint(equalToConstant: size.height).isActive = true
-        
     }
+    
+    func addKeyBoardNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func keyBoardWillShow(notification: Notification) {
+        self.frame.origin.y -= 50
+    }
+    
+    @objc func keyboardWillHide(notification: Notification) {
+        self.frame.origin.y += 50
+    }
+    
+    func removeKeyBoardNotifications(){
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+
 }
