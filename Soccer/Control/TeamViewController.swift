@@ -7,13 +7,22 @@
 //
 
 import UIKit
+import Speech
 
-class MainUICVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class TeamViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let categoryCellID = "categoryCell"
     let optionsCellID = "optionsCell"
+    var isRecording: Bool = false
     
     static var team : Team!
+    
+    let audioEngine = AVAudioEngine()
+    let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
+    let request = SFSpeechAudioBufferRecognitionRequest()
+    var recognitionTask: SFSpeechRecognitionTask?
+
+
     
     let categories: [Category] = {
         var catg = [Category]()
@@ -38,12 +47,90 @@ class MainUICVC: UICollectionViewController, UICollectionViewDelegateFlowLayout 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupCollectionView()
+        configurateNavigationBar()
+    }
+    
+    func setupCollectionView() {
+       
         collectionView?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        
         collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: categoryCellID)
         collectionView.register(OptionsCell.self, forCellWithReuseIdentifier: optionsCellID)
-        
         collectionView.allowsSelection = true
+    }
+    
+    func configurateNavigationBar() {
+        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+        navigationController?.navigationBar.barStyle = .blackTranslucent
+        
+        let goBackToHome = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToHomeController))
+        goBackToHome.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        navigationItem.leftBarButtonItem = goBackToHome
+        
+        let speechDetectionTappedButton =  UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(speechDetectionTapped))
+        speechDetectionTappedButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        navigationItem.rightBarButtonItem = speechDetectionTappedButton
+        
+    }
+    
+    let timer = Timer()
+    
+    @objc func speechDetectionTapped(){
+        
+        if let recognitionTask = recognitionTask {
+            recognitionTask.cancel()
+            self.recognitionTask = nil
+        }
+        
+        let node = audioEngine.inputNode
+        let recordingFormat = node.outputFormat(forBus: 0)
+        node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, _) in
+            self.request.append(buffer)
+        }
+        
+        audioEngine.prepare()
+        
+        do{
+            try audioEngine.start()
+            navigationItem.rightBarButtonItem?.isEnabled = false
+        } catch {
+            return print("error")
+        }
+        
+        guard let myRecognizer = SFSpeechRecognizer() else {return}
+        
+        if !myRecognizer.isAvailable {return}
+        
+        recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
+            if let error = error {
+                print(error)
+            }
+            
+            guard let result = result else {print("no results"); return}
+            
+            let bestString = result.bestTranscription.formattedString
+            
+            if result.isFinal {
+                print(bestString)
+            }
+                self.audioEngine.stop()
+                self.recognitionTask?.cancel()
+                self.recognitionTask?.finish()
+                self.audioEngine.inputNode.removeTap(onBus: 0)
+                self.navigationItem.rightBarButtonItem?.isEnabled = true
+            if result.isFinal {
+                print(bestString)
+            }
+            
+ 
+                //self.popupOption(name: bestString ?? "")
+            
+        })
+    }
+    
+    
+    @objc func goBackToHomeController(){
+        navigationController?.popViewController(animated: true)
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -125,7 +212,11 @@ class MainUICVC: UICollectionViewController, UICollectionViewDelegateFlowLayout 
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section != 0 {
+       
+        if indexPath.section == 0 {
+            let category = categories[indexPath.row]
+            popupOption(name: category.name)
+        } else {
             markOption(at: indexPath)
             let option = options[indexPath.row]
             popupOption(name: option.name)
@@ -146,8 +237,33 @@ class MainUICVC: UICollectionViewController, UICollectionViewDelegateFlowLayout 
         case "Managers":
             view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
             break
-        default:
+        case "Change team":
+            view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
             break
+        case "Rules":
+            view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
+            break
+        case "Weather":
+            view.addSubview(WeatherPopUpView(frame: UIScreen.main.bounds))
+            break
+        case "Setting":
+            navigationController?.pushViewController(SettingVC(), animated: true)
+            break
+        case "Stats":
+            navigationController?.pushViewController(StatsVC(), animated: true)
+            break
+        case "Players":
+            navigationController?.pushViewController(PlayersTableViewController(), animated: true)
+            break
+        case "Games":
+            navigationController?.pushViewController(GamesVC(), animated: true)
+            break
+        case "Payment":
+            navigationController?.pushViewController(PaymentVC(), animated: true)
+            break
+        default:
+            popUpEror(error: "No such item 🤔")
+            
         }
     }
     
@@ -162,6 +278,9 @@ class MainUICVC: UICollectionViewController, UICollectionViewDelegateFlowLayout 
         cell?.layer.borderWidth = 0
         cell?.layer.borderColor = UIColor.clear.cgColor
     }
+}
+
+extension TeamViewController: SFSpeechRecognizerDelegate {
     
 }
 
@@ -223,8 +342,6 @@ class OptionsCell: UICollectionViewCell {
     }
 }
 
-
-
 //  MARK:- CategoryCell Class
 class CategoryCell: UICollectionViewCell {
     
@@ -275,10 +392,9 @@ class CategoryCell: UICollectionViewCell {
     func setupView(){
         addSubviews(catrgoryImageview, nameLabel)
         nameLabel.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: nil, padding: UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0), size: CGSize(width: frame.width, height: frame.height/3))
-        catrgoryImageview.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
         
+        catrgoryImageview.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
-    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

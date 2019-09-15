@@ -15,11 +15,45 @@ class HomeController: UIViewController {
     //MARK: - Properties
 
     static var userAsPlayer = Player()
-
+    
     var delegate: HomeControllerDelegate?
-    private var allTeams = [Team]()
+    
+    private var myTeams = [Team]()
     private let cellID = "myTeamCell"
-    private var changedUser = false
+
+    private var imgArr = [  UIImage(named:"soccer-image-1"),
+                    UIImage(named:"soccer-image-2") ,
+                    UIImage(named:"soccer-image-3") ,
+                    UIImage(named:"soccer-image-4") ,
+                    UIImage(named:"soccer-image-5") ,
+                    UIImage(named:"soccer-image-6")
+    ]
+    
+    private var counter = 0
+    private var timer = Timer()
+    
+    lazy var pageView : UIPageControl = {
+        let pv = UIPageControl()
+        pv.numberOfPages = imgArr.count
+        pv.currentPage = 0
+        
+        return pv
+        
+    }()
+    
+    private let collectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = .horizontal
+        let cv = UICollectionView(frame: CGRect.zero, collectionViewLayout: flowLayout)
+        cv.register(imageSlidesCell.self, forCellWithReuseIdentifier: "cell")
+        cv.isPagingEnabled = true
+        cv.showsVerticalScrollIndicator = false
+        cv.showsHorizontalScrollIndicator = false
+        cv.isScrollEnabled = false
+        
+        
+        return cv
+    }()
     
     private lazy var tableView: UITableView = {
         let tv = UITableView()
@@ -43,29 +77,66 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        
         tableView.dataSource = self
         tableView.delegate = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
-        view.addSubviews(tableView)
-        view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        view.addSubviews(tableView, collectionView)
 
         configurateNavigationBar()
         configurateTableView()
         checkIfUserIsLoggedIn()
-        
+ 
     }
-
+ 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         getPlayerAsUserDetailes()
         reciveTeamsFromDB()
+        
+        DispatchQueue.main.async {
+            self.counter = self.imgArr.count
+            self.timer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(self.changeImage), userInfo: nil, repeats: true)
+        }
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        timer.invalidate()
+    }
+    
+    @objc func changeImage() {
+        
+        if counter < imgArr.count {
+            let index = IndexPath.init(item: counter, section: 0)
+            self.collectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: true)
+            pageView.currentPage = counter
+            counter += 1
+        } else {
+            counter = 0
+            let index = IndexPath.init(item: counter, section: 0)
+            self.collectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: false)
+            pageView.currentPage = counter
+            counter = 1
+        }
+    }
+
     
     //MARK: - Configurations
     
     func configurateTableView() {
         
-        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor)
+        let tableViewHeight = view.frame.height/3
+        
+        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, size: CGSize(width: 0, height: tableViewHeight))
+        
+        collectionView.anchor(top: tableView.bottomAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor)
+        view.addSubview(pageView)
+        pageView.anchor(top: nil, leading: collectionView.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: collectionView.trailingAnchor, size: CGSize(width: 0, height: 20))
+        view.bringSubviewToFront(pageView)
         
         tableView.addSubview(activityIndic)
         activityIndic.centerInSuperview(size: CGSize(width: 50, height: 50))
@@ -132,7 +203,7 @@ class HomeController: UIViewController {
 
         guard let uid = Auth.auth().currentUser?.uid else {print("Error to get uid") ; return }
 
-        allTeams.removeAll()
+        myTeams.removeAll()
         DBService.shared.teamOfUser.child(uid).observeSingleEvent(of: .value) { [self] (snapshot) in
             
             if let teamsName = snapshot.value as? [String:Any] {
@@ -153,7 +224,7 @@ class HomeController: UIViewController {
                         
             let team = Team(snapDict: snapDict)
             
-            self.allTeams.append(team)
+            self.myTeams.append(team)
 
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -173,19 +244,27 @@ class HomeController: UIViewController {
     }
 }
 
-// MARK: - TAbleView Functions
+// MARK: - TableView Functions
 
 extension HomeController: UITableViewDataSource, UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "My Teams"
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-            return allTeams.count  
+        return myTeams.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! ChooseTeamCell
         
-        cell.team = allTeams[indexPath.row]
+        cell.team = myTeams[indexPath.row]
         
         return cell
     }
@@ -197,9 +276,9 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         guard let uid = Auth.auth().currentUser?.uid else { print("cant find the uid"); return}
-        guard let teamToRemove = allTeams[indexPath.row].name else { print("cant find the team name"); return}
+        guard let teamToRemove = myTeams[indexPath.row].name else { print("cant find the team name"); return}
         
-        allTeams.remove(at: indexPath.row)
+        myTeams.remove(at: indexPath.row)
         self.tableView.deleteRows(at: [indexPath], with: .automatic )
         
        
@@ -210,22 +289,87 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     
     func deleteTeamFromTeams(teamToDelete: String) {
         
-        allTeams = allTeams.filter({$0.name != teamToDelete})
+        myTeams = myTeams.filter({$0.name != teamToDelete})
     
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        MainUICVC.team = allTeams[indexPath.row]
+        TeamViewController.team = myTeams[indexPath.row]
         
         let flowLayout = UICollectionViewFlowLayout()
         
-        let teamViewController = MainUICVC(collectionViewLayout: flowLayout)
+        let teamViewController = TeamViewController(collectionViewLayout: flowLayout)
         navigationController?.pushViewController(teamViewController, animated: true)
     
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 72
+    }
+}
+
+// MARK: - CollectionView Delegate
+
+extension HomeController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imgArr.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! imageSlidesCell
+        cell.slideImage = imgArr[indexPath.row]
+        return cell
+    }
+}
+
+extension HomeController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let size = collectionView.frame.size
+        return CGSize(width: size.width, height: size.height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.0
+    }
+}
+
+class imageSlidesCell: UICollectionViewCell {
+    override init(frame: CGRect){
+        super.init(frame:frame)
+        setupView()
+        backgroundColor = #colorLiteral(red: 0.9046169519, green: 0.9447903037, blue: 0.9739736915, alpha: 1)
+    }
+    
+    var slideImage: UIImage? {
+          didSet{
+            imageView.image = slideImage
+        }
+    }
+    
+    let imageView: UIImageView = {
+       let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        return imageView
+    }()
+    
+    func setupView(){
+        addSubview(imageView)
+        imageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

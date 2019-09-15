@@ -107,7 +107,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     lazy var profileImageView: UIImageView = {
        let imageView = UIImageView()
-        imageView.image = UIImage(named: "selectImage")
+        imageView.image = UIImage(named: "ChooseImage")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 10
@@ -174,8 +174,8 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
     var passwordTextFieldHeightAnchor: NSLayoutConstraint?
 
     func setupinputContainerViewConstraint(){
-        inputContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        inputContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        inputContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor) .isActive = true
+        inputContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -28).isActive = true
         inputContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -24).isActive = true
         inputContaunerViewHeightAnchor = inputContainerView.heightAnchor.constraint(equalToConstant: 150)
         inputContaunerViewHeightAnchor?.isActive = true
@@ -292,7 +292,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
             
             let uploadImageRef = DBService.shared.storageRef.child(fileName)
             
-            let uploadTask = uploadImageRef.putData(profileImageData, metadata: nil) { (metadata, error) in
+            uploadImageRef.putData(profileImageData, metadata: nil) { (metadata, error) in
                 
                 if let error = error {
                     self.popUpEror(error: error)
@@ -311,9 +311,7 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
                         }
                     })
                 }
-            }
-            
-                uploadTask.resume()
+            }.resume()
         }   
     }
     
@@ -359,7 +357,9 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
             emailTextFiled.text = UserDefaults.standard.object(forKey: "userEmail") as? String
             passwordTextFiled.text = UserDefaults.standard.object(forKey: "userPass") as? String
+            profileImageView.isHidden = true
         } else {
+            profileImageView.isHidden = false
             emailTextFiled.text = ""
             passwordTextFiled.text = ""
         }

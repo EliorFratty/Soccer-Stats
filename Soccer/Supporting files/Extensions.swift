@@ -181,11 +181,11 @@ extension UIView {
     }
     
     @objc func keyBoardWillShow(notification: Notification) {
-        self.frame.origin.y -= 50
+        self.frame.origin.y -= 60
     }
     
     @objc func keyboardWillHide(notification: Notification) {
-        self.frame.origin.y += 50
+        self.frame.origin.y += 60
     }
     
     func removeKeyBoardNotifications(){

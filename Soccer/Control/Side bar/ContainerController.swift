@@ -54,15 +54,10 @@ class ContainerController: UIViewController {
     }
     
     //MARK: - Handlers
-   
-    func logout(){
-        try! Auth.auth().signOut()
-        let viewCntroller = LogInViewController()
-        self.present(viewCntroller, animated: true, completion: nil)
-    }
   
-    func animatePanel(sholdExpend: Bool, menuOption: MenuOption?) {
+     func animateIn(sholdExpend: Bool, menuOption: MenuOption?) {
         if sholdExpend {
+            setupTapGestureRecognizer()
             UIView.animate(withDuration: 0.7 ,
                            delay: 0,
                            usingSpringWithDamping: 0.8,
@@ -73,34 +68,31 @@ class ContainerController: UIViewController {
 
             },
                            completion: nil)
-        } else {
-            UIView.animate(withDuration: 0.7 ,
-                           delay: 0,
-                           usingSpringWithDamping: 0.8,
-                           initialSpringVelocity: 0,
-                           animations: {
-                            self.centerController.view.frame.origin.x  = 0
-                            self.centerController.view.alpha = 1.0
-
-            },
-                           completion: nil)
+        }
         
-            UIView.animate(withDuration: 0.5,
-                           delay: 0,
-                           options: .curveEaseInOut,
-                           animations: { [self] in
-                           self.centerController.view.frame.origin.x = 0
-                            
-            }) { [self] (_) in
-                guard let menuOption = menuOption else {return}
-                self.didSelectMenuOption(menuOption: menuOption)
-            }
+        if let menuOption = menuOption {
+            didSelectMenuOption(menuOption: menuOption)
+            animateOut()
         }
     }
     
     func didSelectMenuOption(menuOption: MenuOption) {        
         switch menuOption{
             case .logout: logout()
+        }
+    }
+    
+    func logout(){
+        try! Auth.auth().signOut()
+        let viewCntroller = LogInViewController()
+        self.present(viewCntroller, animated: true, completion: nil)
+    }
+    
+    func removeAllGestureRecognizer(){
+        if let recognizers = view.gestureRecognizers {
+            for recognizer in recognizers {
+                view.removeGestureRecognizer(recognizer )
+            }
         }
     }
 }
@@ -113,7 +105,49 @@ extension ContainerController: HomeControllerDelegate {
         }
 
         isExpanded = !isExpanded
-        animatePanel(sholdExpend: isExpanded, menuOption: menuOption)
+        animateIn(sholdExpend: isExpanded, menuOption: menuOption)
+    }
+}
+
+extension ContainerController: UIGestureRecognizerDelegate{
+    
+    func setupTapGestureRecognizer() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(animateOut))
+        tap.delegate = self
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func animateOut(){
+        centerController.view.alpha = 1.0
+        
+        UIView.animate(withDuration: 0.7 ,
+                       delay: 0,
+                       usingSpringWithDamping: 0.8,
+                       initialSpringVelocity: 0,
+                       animations: {
+                        self.centerController.view.frame.origin.x  = 0
+                       
+                        
+        },
+                       completion: nil)
+        
+        isExpanded.toggle()
+        removeAllGestureRecognizer()
+    }
+    
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        
+        if isExpanded{
+            guard let menuControllerToch = menuController else {return false}
+
+            if touch.view != menuControllerToch.view {
+                    return true
+                }
+            return false
+        }
+        
+        return true
     }
 }
 

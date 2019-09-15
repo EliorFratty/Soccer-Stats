@@ -25,9 +25,9 @@ struct Player {
 
     init(id: String, dict: [String:Any]) {
         self.id = id
-        fullName = dict["fullName"] as! String
-        email = dict["email"] as! String
-        profileImageUrl = dict["profileImageUrl"] as! String
+        fullName = dict["fullName"] as? String ?? "noName"
+        email = dict["email"] as? String ?? "noEmail"
+        profileImageUrl = dict["profileImageUrl"] as? String ?? "noImage"
     }
     
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Team: NSObject {
+struct Team {
     
     var date: String?
     var name: String?
@@ -22,8 +22,11 @@ class Team: NSObject {
         teamImoji = snapDict["imoji"] as? String ?? "A"
     }
     
-    override init() {
-        super.init()
+    init() {
+        date = ""
+        name = ""
+        teamImoji = ""
+        teamSummary = ""
     }
 
 }
