@@ -238,7 +238,7 @@ class TeamViewController: UICollectionViewController, UICollectionViewDelegateFl
             view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
             break
         case "Change team":
-            view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
+            navigationController?.popViewController(animated: true)
             break
         case "Rules":
             view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
@@ -276,7 +276,6 @@ class TeamViewController: UICollectionViewController, UICollectionViewDelegateFl
     func demarkOption(at indexPath: IndexPath){
         let cell = collectionView.cellForItem(at: indexPath)
         cell?.layer.borderWidth = 0
-        cell?.layer.borderColor = UIColor.clear.cgColor
     }
 }
 

@@ -30,9 +30,9 @@ class UserCell: UITableViewCell {
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = profileImageViewHeight/2
-        imageView.layer.masksToBounds = true
         
         return imageView
     }()

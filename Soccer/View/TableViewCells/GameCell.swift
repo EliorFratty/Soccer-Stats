@@ -43,8 +43,7 @@ class GameCell: UITableViewCell {
     }()
     
     var confirmButtonTapped: (() -> Void)? = nil
-    
-    
+  
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         

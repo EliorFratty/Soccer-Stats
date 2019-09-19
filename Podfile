@@ -14,6 +14,7 @@ target 'Soccer' do
     pod 'Firebase/Storage'
     pod 'LBTATools'
     pod 'Alamofire'
+    pod 'SwiftyJSON'
 
 
 

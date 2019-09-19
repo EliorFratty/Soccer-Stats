@@ -38,9 +38,9 @@ class MenuController: UIViewController {
         imageView.loadImageUsingCatchWithUrlString(URLString: HomeController.userAsPlayer.profileImageUrl)
         imageView.backgroundColor = .white
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 50
-        imageView.layer.masksToBounds = true
         
         return imageView
     }()

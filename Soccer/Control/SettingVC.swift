@@ -16,6 +16,7 @@ class SettingVC: UIViewController {
     // MARK: - Properties
     
     var userInfoHeader: UserInfoHeader!
+    let player: Player = HomeController.userAsPlayer
     
     lazy var tableView: UITableView = {
         let tb = UITableView()
@@ -32,27 +33,26 @@ class SettingVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        
+        configureTableView()
+        configurateNavigationBar()
     }
 
     // MARK: - Helper Functions
     
     func configureTableView() {
+
+        let frame = CGRect(x: 0, y: 88, width: view.frame.width, height: 100)
+        userInfoHeader = UserInfoHeader(frame: frame)
+        userInfoHeader.playerProfile = player
+        view.addSubview(tableView)
+        
         tableView.delegate = self
         tableView.dataSource = self
 
-        
-        //tableView.frame = view.frame
-        
-        let frame = CGRect(x: 0, y: 88, width: view.frame.width, height: 100)
-        userInfoHeader = UserInfoHeader(frame: frame)
-        view.addSubview(tableView)
-       // tableView.tableHeaderView = userInfoHeader
-       // tableView.tableFooterView = UIView()
     }
     
-    func configureUI() {
-        configureTableView()
+    func configurateNavigationBar() {
         
         navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
         navigationController?.navigationBar.barStyle = .blackTranslucent
@@ -61,7 +61,6 @@ class SettingVC: UIViewController {
         goBackToHome.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
         navigationItem.leftBarButtonItem = goBackToHome
         navigationItem.title = "Settings"
-        
     }
     
     @objc func goBackToHomeController(){
@@ -136,7 +135,7 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
             }
 
         case .Communications:
-            tableView.deselectRow(at: indexPath, animated: false)
+            print("")
         }
     }
     
@@ -144,6 +143,7 @@ extension SettingVC: UITableViewDelegate, UITableViewDataSource {
         try! Auth.auth().signOut()
         let viewCntroller = LogInViewController()
         self.present(viewCntroller, animated: true, completion: nil)
+        navigationController?.popToRootViewController(animated: true)
     }
 }
 
