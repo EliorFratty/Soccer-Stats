@@ -9,22 +9,34 @@
 import UIKit
 
 class StatsVC: UIViewController {
+    
+    private let textDesign = TextDesign()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        
+        configurateNavigationBar()
+        
     }
     
+    func configurateNavigationBar() {
+        navigationController?.navigationBar.barTintColor = textDesign.navigationBarTintColor
+        navigationController?.navigationBar.barStyle = .blackTranslucent
+        
+        let goBackToHome = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToHomeController))
+        goBackToHome.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
+        navigationItem.leftBarButtonItem = goBackToHome
+        
+        self.navigationItem.title = "Stats"
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        
     }
-    */
+    
+    @objc func goBackToHomeController(){
+        navigationController?.popViewController(animated: true)
+    }
+
 
 }

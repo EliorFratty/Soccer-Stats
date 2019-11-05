@@ -12,7 +12,7 @@ class UserInfoHeader: UIView {
     
     // MARK: - Properties
     
-    var playerProfile: Player? {
+    var playerProfile: User? {
         didSet{
             usernameLabel.text = playerProfile?.fullName
             emailLabel.text = playerProfile?.email

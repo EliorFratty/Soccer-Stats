@@ -15,8 +15,11 @@ class PlayersTableViewController: UIViewController{
     
     // MARK: - Properties
 
-    var players = [Player]()
-    var searchedPlayers = [Player]()
+    
+    private let textDesign = TextDesign()
+    
+    var players = [User]()
+    var searchedPlayers = [User]()
     var searching = false
     let cellID = "playerCell"
     
@@ -101,7 +104,7 @@ class PlayersTableViewController: UIViewController{
         configurateSearchBar()
         configurateTableView()
         
-        makeNavBar()
+        configurateNavigationBar()
         importTeamPlayersFromDB()
         tableView.allowsMultipleSelectionDuringEditing = true
         
@@ -128,12 +131,22 @@ class PlayersTableViewController: UIViewController{
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
-    func makeNavBar() {
+    func configurateNavigationBar() {
         
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tapAddButton))
+        addButton.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         self.navigationItem.rightBarButtonItem = addButton
-        navigationItem.leftBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
-        navigationItem.rightBarButtonItem?.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        
+        let goBackToHome = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToHomeController))
+        goBackToHome.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
+        navigationItem.leftBarButtonItem = goBackToHome
+        
+        self.navigationItem.title = "Players"
+       
+    }
+    
+    @objc func goBackToHomeController(){
+        navigationController?.popViewController(animated: true)
     }
 
     //MARK: - Handlers
@@ -169,7 +182,7 @@ class PlayersTableViewController: UIViewController{
         DBService.shared.users.child(user).observeSingleEvent(of: .value) { (snapshot) in
             guard let snapDict = snapshot.value as? [String : Any] else {return}
 
-            let player = Player(id: snapshot.key, dict: snapDict)
+            let player = User(id: snapshot.key, dict: snapDict)
             self.players.append(player)
             
             // sort player from A-Z
@@ -271,7 +284,7 @@ extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate
         
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! UserCell
         
-        let playerToShow: Player
+        let playerToShow: User
         
         if searching {
             playerToShow = searchedPlayers[indexPath.row]
@@ -291,6 +304,32 @@ extension PlayersTableViewController: UITableViewDataSource, UITableViewDelegate
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       
+        let userToShow: User
+        
+        if searching {
+            userToShow = searchedPlayers[indexPath.row]
+            
+        } else {
+            userToShow = players[indexPath.row]
+        }
+        
+        let playerStatsVC = PlayerStatsVC()
+        
+        DBService.shared.getPlayerDetailes(userName: userToShow.fullName, completion: { [self] (player) in
+            
+            DispatchQueue.main.async {
+                playerStatsVC.user = userToShow
+                playerStatsVC.player = player
+                self.navigationController?.pushViewController(playerStatsVC, animated: true)
+
+            }
+        })
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

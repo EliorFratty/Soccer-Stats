@@ -15,8 +15,9 @@ class SettingVC: UIViewController {
     
     // MARK: - Properties
     
+    private let textDesign = TextDesign()
     var userInfoHeader: UserInfoHeader!
-    let player: Player = HomeController.userAsPlayer
+    let player: User = HomeController.userAsPlayer
     
     lazy var tableView: UITableView = {
         let tb = UITableView()
@@ -54,11 +55,11 @@ class SettingVC: UIViewController {
     
     func configurateNavigationBar() {
         
-        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+        navigationController?.navigationBar.barTintColor = textDesign.navigationBarTintColor
         navigationController?.navigationBar.barStyle = .blackTranslucent
         
         let goBackToHome = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToHomeController))
-        goBackToHome.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        goBackToHome.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         navigationItem.leftBarButtonItem = goBackToHome
         navigationItem.title = "Settings"
     }

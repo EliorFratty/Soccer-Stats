@@ -32,16 +32,6 @@ class ManagersPopUpView: UIView, UITextFieldDelegate {
         removeKeyBoardNotifications()
     }
     
-    let scrollView: UIScrollView = {
-       let sv = UIScrollView()
-        sv.alwaysBounceVertical = true
-        sv.backgroundColor = UIColor.clear
-        sv.bounces = false
-        sv.showsVerticalScrollIndicator = false
-        
-        return sv
-    }()
-    
     fileprivate let container: UIView = {
         let v = UIView()
         v.backgroundColor = .white

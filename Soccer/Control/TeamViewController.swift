@@ -15,6 +15,8 @@ class TeamViewController: UICollectionViewController, UICollectionViewDelegateFl
     let optionsCellID = "optionsCell"
     var isRecording: Bool = false
     
+    let textDesign = TextDesign()
+    
     static var team : Team!
     
     let audioEngine = AVAudioEngine()
@@ -46,7 +48,6 @@ class TeamViewController: UICollectionViewController, UICollectionViewDelegateFl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupCollectionView()
         configurateNavigationBar()
     }
@@ -60,15 +61,18 @@ class TeamViewController: UICollectionViewController, UICollectionViewDelegateFl
     }
     
     func configurateNavigationBar() {
-        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
-        navigationController?.navigationBar.barStyle = .blackTranslucent
         
+        self.navigationItem.title = "\(TeamViewController.team.name ?? "") Team"
+        
+        navigationController?.navigationBar.barTintColor = textDesign.navigationBarTintColor
+        navigationController?.navigationBar.barStyle = .blackTranslucent
+
         let goBackToHome = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBackToHomeController))
-        goBackToHome.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        goBackToHome.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         navigationItem.leftBarButtonItem = goBackToHome
         
         let speechDetectionTappedButton =  UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(speechDetectionTapped))
-        speechDetectionTappedButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        speechDetectionTappedButton.tintColor = textDesign.navigationBarButtonColor
         navigationItem.rightBarButtonItem = speechDetectionTappedButton
         
     }
@@ -241,7 +245,7 @@ class TeamViewController: UICollectionViewController, UICollectionViewDelegateFl
             navigationController?.popViewController(animated: true)
             break
         case "Rules":
-            view.addSubview(ManagersPopUpView(frame: UIScreen.main.bounds))
+            view.addSubview(RulesPopUpView(frame: UIScreen.main.bounds))
             break
         case "Weather":
             view.addSubview(WeatherPopUpView(frame: UIScreen.main.bounds))

@@ -14,8 +14,7 @@ struct ApiServices {
     static let shared = ApiServices()
     
     private init() {}
-    
-    
+
     func getWeatherFromDarkSkyApi(withLocation location: CLLocationCoordinate2D, completion: @escaping ([WeatherJSON]) -> ()) {
         
         let urlForWeather = "https://api.darksky.net/forecast/08662dac643c2515cf324be0bfdd81ec/"

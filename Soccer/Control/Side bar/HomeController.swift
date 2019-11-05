@@ -10,13 +10,15 @@ import UIKit
 import Firebase
 import Alamofire
 
+
 class HomeController: UIViewController {
     
     //MARK: - Properties
 
-    static var userAsPlayer = Player()
+    static var userAsPlayer = User()
     
     var delegate: HomeControllerDelegate?
+    private let textDesign = TextDesign()
     
     private var myTeams = [Team]()
     private let cellID = "myTeamCell"
@@ -77,6 +79,7 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        try! Auth.auth().signOut()
         view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
         tableView.dataSource = self
@@ -147,12 +150,14 @@ class HomeController: UIViewController {
         navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
         navigationController?.navigationBar.barStyle = .blackTranslucent
         
+        navigationController?.navigationBar.titleTextAttributes = textDesign.navigationBarAtrr
+        
         let profileButton = UIBarButtonItem(title: "Profile", style: .plain, target: self, action: #selector(handleMenuToggle))
-        profileButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        profileButton.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         navigationItem.leftBarButtonItem = profileButton
         
         let searchTeamButton = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchTeamFromAllUsers))
-        searchTeamButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        searchTeamButton.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         navigationItem.rightBarButtonItem = searchTeamButton
         
     }
@@ -183,53 +188,28 @@ class HomeController: UIViewController {
     }
     
     func getPlayerAsUserDetailes() {
-        guard let uid = Auth.auth().currentUser?.uid else {print("Error") ; return }
-       
-        DBService.shared.users.child(uid).observeSingleEvent(of:.value) { [self] (snapshot) in
-           
-            if let dict = snapshot.value as? [String:Any] {
-                
-                let player = Player(id: snapshot.key, dict: dict)
-                self.navigationItem.title = "Hello \(player.fullName)"
-                HomeController.userAsPlayer = player
-                self.enabledNavigationBarButtonsStopIndic()
-                
-            }
+        
+        DBService.shared.getUserDetailes { [self] (user) in
+            self.navigationItem.title = "Hello \(user.fullName)"
+            HomeController.userAsPlayer = user
+            self.enabledNavigationBarButtonsStopIndic()
         }
     }
     
     func reciveTeamsFromDB() {
         disableNavigationBarButtons()
 
-        guard let uid = Auth.auth().currentUser?.uid else {print("Error to get uid") ; return }
-
         myTeams.removeAll()
-        DBService.shared.teamOfUser.child(uid).observeSingleEvent(of: .value) { [self] (snapshot) in
+        DBService.shared.reciveTeamsFromDB { (allUserTeams) in
+	            self.myTeams = allUserTeams
             
-            if let teamsName = snapshot.value as? [String:Any] {
-
-                for teamName in teamsName {
-                    self.getUserTeamDetailesFromDB(teamName: teamName.key)
-                }
+            DispatchQueue.main.async {
+                
+                self.tableView.reloadData()
+                self.activityIndic.stopAnimating()
             }
         }
-    }
-    
-    func getUserTeamDetailesFromDB(teamName: String ) {
         
-        DBService.shared.allTeams.child(teamName).observe(.value, with: { (snapshot) in
-            self.activityIndic.stopAnimating()
-
-            guard let snapDict = snapshot.value as? [String : Any] else {return}
-                        
-            let team = Team(snapDict: snapDict)
-            
-            self.myTeams.append(team)
-
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        })
     }
     
     func enabledNavigationBarButtonsStopIndic(){

@@ -12,7 +12,7 @@ class UserCell: UITableViewCell {
     
     let profileImageViewHeight:CGFloat = 48
     
-    var player: Player? {
+    var player: User? {
         didSet{
             textLabel?.text = player?.fullName
             detailTextLabel?.text = player?.email

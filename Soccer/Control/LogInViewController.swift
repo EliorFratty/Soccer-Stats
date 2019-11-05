@@ -210,11 +210,12 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
         passwordTextFieldHeightAnchor = passwordTextFiled.heightAnchor.constraint(equalTo: inputContainerView.heightAnchor, multiplier: 1/3)
         passwordTextFieldHeightAnchor?.isActive = true
         
-        loadingContainerView.centerXAnchor.constraint(equalTo: inputContainerView.centerXAnchor).isActive = true
-        loadingContainerView.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
-        loadingContainerView.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        loadingContainerView.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        
+        loadingContainerView.centerInSuperview(size: CGSize(width: 80, height: 80))
+//        loadingContainerView.centerXAnchor.constraint(equalTo: inputContainerView.centerXAnchor).isActive = true
+//        loadingContainerView.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
+//        loadingContainerView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+//        loadingContainerView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+//
         setuploadingContainerViewConstraint()
     }
     
@@ -300,19 +301,46 @@ class LogInViewController: UIViewController, UIImagePickerControllerDelegate, UI
                 }
 
                 DispatchQueue.main.async {
-                    uploadImageRef.downloadURL(completion: { (url, error) in
+                    uploadImageRef.downloadURL(completion: { [self] (url, error) in
                         if let url = url {
-                            let param = ["fullName": name,
+                            let userParam = ["fullName": name,
                                          "email" : email,
-                                         "profileImageUrl" :  url.absoluteString]
+                                         "profileImageUrl" :  url.absoluteString
+                                            ]
                             
-                            DBService.shared.users.child(userID).setValue(param)
+                            DBService.shared.users.child(userID).setValue(userParam)
+                            self.makePlayerToUser(name)
                             self.dismiss(animated: true, completion: nil)
                         }
                     })
                 }
             }.resume()
         }   
+    }
+    
+    func makePlayerToUser(_ userName: String) {
+        let playerParam = [
+            
+            "games"         : 0,
+            "goals"         : 0,
+            "asists"        : 0,
+            "wins"          : 0,
+            "tie"           : 0,
+            "lose"          : 0,
+            "speed"         : 0,
+            "shoot"         : 0,
+            "drible"        : 0,
+            "tackle"        : 0,
+            "pass"          : 0,
+            "goalKeeper"    : 0,
+            "didRank"       : "false",
+            "didManager"    : "false",
+            "allPlayersRanked": 0
+            ] as [String : Any]
+        
+        
+        DBService.shared.players.child(userName).setValue(playerParam)
+        
     }
     
     func loginToTheSystem(){

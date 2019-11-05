@@ -19,10 +19,12 @@ class SearchTeamTableTableViewController: UIViewController{
     var searchedTeam = [Team]()
     var searching = false
     
-    let searchBar: UISearchBar = {
+    private let textDesign = TextDesign()
+    
+    lazy var searchBar: UISearchBar = {
         let sb = UISearchBar()
         sb.translatesAutoresizingMaskIntoConstraints = false
-        sb.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+        sb.barTintColor = textDesign.navigationBarTintColor
 
         return sb
     }()
@@ -73,16 +75,16 @@ class SearchTeamTableTableViewController: UIViewController{
     }
     
     func makeNavBar() {
-        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)
+        navigationController?.navigationBar.barTintColor = textDesign.navigationBarTintColor
         navigationController?.navigationBar.barStyle = .blackTranslucent
         self.title = "Search Team"
         
         let cancelButton =  UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped))
-        cancelButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        cancelButton.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         navigationItem.leftBarButtonItem = cancelButton
         
         let addNewTeamButton = UIBarButtonItem(title: "New Team", style: .plain, target: self, action: #selector(addTeamToDB))
-        addNewTeamButton.tintColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        addNewTeamButton.setTitleTextAttributes(textDesign.navigationBarButtonItemAtrr, for: .normal)
         navigationItem.rightBarButtonItem = addNewTeamButton
         
     }
